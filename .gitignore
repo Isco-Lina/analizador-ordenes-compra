@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+
+# Archivos de órdenes de compra
+data/pdf/*.pdf
+
+# Archivos generados
+data/output/*.xlsx
