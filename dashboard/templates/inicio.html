@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Centro de Control | ComprasAnalytics{% endblock %}
+{% block content %}
+<div class="container-fluid px-0">
+    <div class="page-title">
+        <div>
+            <span class="page-badge">CENTRO DE CONTROL</span>
+            <h2>Panorama de Compras</h2>
+            <p>Resumen objetivo del historial: actividad, proveedores y referencias de precio registradas.</p>
+        </div>
+        <div class="data-status"><span></span>Datos actualizados</div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        {% for titulo, valor, texto, icono in [
+            ('Órdenes de Compra', total_oc, 'OC registradas', 'file-earmark-text'),
+            ('Proveedores', total_proveedores, 'proveedores registrados','buildings'),
+            ('Movimientos', total_movimientos,'líneas de artículos','box-seam'),
+            ('Proveedor único', total_proveedor_unico,'productos comprados a un solo proveedor','person-lock')
+        ] %}
+        <div class="col-xl-3 col-md-6">
+            <div class="card kpi-card h-100"><div class="card-body">
+                <div class="kpi-header"><span>{{ titulo }}</span><div class="kpi-icon"><i class="bi bi-{{ icono }}"></i></div></div>
+                <div class="kpi-value">{{ valor }}</div>
+                <div class="kpi-description">{{ texto }}</div>
+            </div></div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="row g-4">
+        <div class="col-xl-8">
+            <div class="card content-card h-100"><div class="card-body">
+                <div class="card-title-area">
+                    <div>
+                        <h3>Referencias históricas destacadas</h3>
+                        <p>Productos con un solo proveedor histórico, priorizados por cantidad de OC.</p>
+                    </div>
+                    <a href="{{ url_for('alertas') }}" class="btn btn-sm btn-outline-primary">Ver historial completo</a>
+                </div>
+
+                {% if referencias %}
+                <div class="table-responsive">
+                    <table class="table purchase-table align-middle">
+                        <thead><tr><th>Producto</th><th>Proveedor</th><th class="text-center">OC</th><th>Última compra</th><th class="text-end">Último</th><th class="text-end">Mín.</th><th class="text-end">Máx.</th></tr></thead>
+                        <tbody>
+                        {% for item in referencias %}
+                        <tr>
+                            <td class="product-cell"><strong>{{ item.descripcion }}</strong><small class="d-block text-muted">{{ item.unidad or '-' }} · {{ item.moneda }}</small></td>
+                            <td><a class="table-link" href="{{ url_for('proveedores', proveedor=item.proveedor) }}">{{ item.proveedor }}</a></td>
+                            <td class="text-center"><span class="dependency-badge">{{ item.ordenes }}</span></td>
+                            <td>{{ item.ultima_compra }}</td>
+                            <td class="text-end"><strong>{{ item.ultimo_precio }}</strong></td>
+                            <td class="text-end price-min">{{ item.minimo }}</td>
+                            <td class="text-end price-max">{{ item.maximo }}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="mini-empty">No hay referencias disponibles con los datos actuales.</div>
+                {% endif %}
+            </div></div>
+        </div>
+
+        <div class="col-xl-4">
+            <div class="card content-card h-100"><div class="card-body">
+                <div class="card-title-area">
+                    <div><h3>Últimas órdenes</h3><p>Actividad más reciente registrada.</p></div>
+                    <a href="{{ url_for('ordenes_compra') }}" class="table-link">Buscar OC</a>
+                </div>
+                <div class="recent-list">
+                    {% for oc in ultimas_oc %}
+                    <a href="{{ url_for('ordenes_compra', q=oc.numero_oc) }}" class="recent-item">
+                        <div><strong>{{ oc.numero_oc }}</strong><span>{{ oc.proveedor }}</span></div>
+                        <div class="text-end"><strong>{{ oc.total }}</strong><span>{{ oc.fecha }}</span></div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div></div>
+        </div>
+    </div>
+
+    <div class="section-header"><h3>Accesos principales</h3><p>Herramientas de consulta y análisis.</p></div>
+    <div class="quick-grid">
+        <a href="{{ url_for('dashboard') }}"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+        <a href="{{ url_for('productos') }}"><i class="bi bi-search"></i><span>Buscar Producto</span></a>
+        <a href="{{ url_for('proveedores') }}"><i class="bi bi-buildings"></i><span>Proveedores</span></a>
+        <a href="{{ url_for('precios') }}"><i class="bi bi-graph-up-arrow"></i><span>Precios</span></a>
+        <a href="{{ url_for('alertas') }}"><i class="bi bi-clock-history"></i><span>Historial y Control</span></a>
+    </div>
+</div>
+{% endblock %}

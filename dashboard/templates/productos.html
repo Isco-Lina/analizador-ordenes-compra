@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+
+{% block title %}Buscar Producto | ComprasAnalytics{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+
+    <div class="page-title">
+        <div>
+            <h2>Inteligencia de Productos</h2>
+            <p>Busca un producto, revisa su historial y compara proveedores sin mezclar unidades ni monedas.</p>
+        </div>
+        <div class="data-status"><span></span>Datos históricos</div>
+    </div>
+
+    <form method="get" class="search-panel">
+        <div class="input-group input-group-lg">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" class="form-control"
+                   placeholder="Ejemplo: baldosa, perfil, acero, canal..."
+                   value="{{ busqueda }}" autofocus>
+            <button class="btn btn-primary px-4" type="submit">Buscar</button>
+        </div>
+    </form>
+
+    {% if analisis %}
+
+    <div class="product-analysis-header content-card">
+        <div class="card-body">
+            <div class="product-analysis-title">
+                <div class="product-analysis-icon"><i class="bi bi-box-seam"></i></div>
+                <div>
+                    <span class="section-eyebrow">Producto seleccionado</span>
+                    <h2>{{ analisis.descripcion }}</h2>
+                    <p>
+                        {% if analisis.codigo %}Código {{ analisis.codigo }} · {% endif %}
+                        Unidad: {{ analisis.unidad or "-" }}
+                    </p>
+                </div>
+                <div class="product-analysis-actions">
+                    <a href="{{ url_for('productos', q=busqueda or analisis.descripcion) }}"
+                       class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Volver a resultados
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if analisis.monedas|length > 1 %}
+    <div class="currency-selector mt-3">
+        <span>Analizar moneda:</span>
+        <div>
+            {% for moneda in analisis.monedas %}
+            <a class="btn btn-sm {% if moneda == analisis.moneda %}btn-primary{% else %}btn-outline-secondary{% endif %}"
+               href="{{ url_for('productos', q=busqueda, descripcion=analisis.descripcion, unidad=analisis.unidad, codigo=analisis.codigo, moneda=moneda) }}">
+                {{ moneda }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row g-4 mt-1">
+        <div class="col-xl-3 col-md-6">
+            <div class="card kpi-card h-100"><div class="card-body">
+                <div class="kpi-header"><span>Último precio</span><div class="kpi-icon"><i class="bi bi-tag"></i></div></div>
+                <div class="kpi-value kpi-value-money">{{ analisis.ultimo_precio }}</div>
+                <div class="kpi-description">Última compra: {{ analisis.ultima_compra }}</div>
+            </div></div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card kpi-card h-100"><div class="card-body">
+                <div class="kpi-header"><span>Mediana histórica</span><div class="kpi-icon"><i class="bi bi-bar-chart"></i></div></div>
+                <div class="kpi-value kpi-value-money">{{ analisis.mediana }}</div>
+                <div class="kpi-description">Promedio: {{ analisis.promedio }}</div>
+            </div></div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card kpi-card h-100"><div class="card-body">
+                <div class="kpi-header"><span>Rango histórico</span><div class="kpi-icon"><i class="bi bi-arrow-down-up"></i></div></div>
+                <div class="kpi-range-value">{{ analisis.minimo }}</div>
+                <div class="kpi-description">Máximo: {{ analisis.maximo }}</div>
+            </div></div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card kpi-card h-100"><div class="card-body">
+                <div class="kpi-header"><span>Historial</span><div class="kpi-icon"><i class="bi bi-clock-history"></i></div></div>
+                <div class="kpi-value">{{ analisis.ordenes }} OC</div>
+                <div class="kpi-description">{{ analisis.proveedores }} proveedores · {{ analisis.movimientos }} movimientos</div>
+            </div></div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-1">
+        <div class="col-xl-8">
+            <div class="card content-card h-100"><div class="card-body">
+                <div class="card-title-area">
+                    <div><h3>Evolución del Precio Unitario</h3><p>Cada punto corresponde a un antecedente histórico en {{ analisis.moneda }}.</p></div>
+                    <i class="bi bi-graph-up"></i>
+                </div>
+                <div class="product-chart-container"><canvas id="graficoPrecioProducto"></canvas></div>
+            </div></div>
+        </div>
+
+        <div class="col-xl-4">
+            <div class="card content-card h-100"><div class="card-body">
+                <div class="card-title-area">
+                    <div><h3>Simular Compra</h3><p>Ingresa la cantidad que necesitas comprar.</p></div>
+                    <i class="bi bi-calculator"></i>
+                </div>
+                <form method="get" class="simulation-form">
+                    <input type="hidden" name="q" value="{{ busqueda }}">
+                    <input type="hidden" name="descripcion" value="{{ analisis.descripcion }}">
+                    <input type="hidden" name="unidad" value="{{ analisis.unidad }}">
+                    <input type="hidden" name="codigo" value="{{ analisis.codigo }}">
+                    <input type="hidden" name="moneda" value="{{ analisis.moneda }}">
+                    <label class="form-label">Cantidad requerida</label>
+                    <div class="input-group">
+                        <input type="number" min="0.0001" step="any" name="cantidad" class="form-control"
+                               value="{{ cantidad_simulacion if cantidad_simulacion else '' }}"
+                               placeholder="Ejemplo: 250">
+                        <span class="input-group-text">{{ analisis.unidad or "un" }}</span>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">
+                        <i class="bi bi-calculator me-2"></i>Calcular costos
+                    </button>
+                </form>
+                <div class="historical-warning mt-3">
+                    <i class="bi bi-info-circle"></i>
+                    <span>La simulación usa precios históricos de referencia. No representa una cotización vigente.</span>
+                </div>
+            </div></div>
+        </div>
+    </div>
+
+    {% if analisis.recomendacion %}
+    <div class="recommendation-card mt-4">
+        <div class="recommendation-main">
+            <div class="recommendation-icon"><i class="bi bi-lightbulb"></i></div>
+            <div class="recommendation-content">
+                <span class="section-eyebrow">Proveedor sugerido para cotizar</span>
+                <h3>{{ analisis.recomendacion.proveedor }}</h3>
+                <p>
+                    Precio histórico de referencia: <strong>{{ analisis.recomendacion.precio_referencia }}</strong>
+                    · {{ analisis.recomendacion.ordenes }} OC
+                    · última compra {{ analisis.recomendacion.ultima_compra }}
+                </p>
+            </div>
+            <div class="confidence-badge confidence-{{ analisis.recomendacion.confianza|lower }}">
+                Confianza {{ analisis.recomendacion.confianza }}
+            </div>
+        </div>
+
+        <div class="recommendation-metrics">
+            {% if analisis.recomendacion.benchmark %}
+            <div><span>Mediana de alternativas</span><strong>{{ analisis.recomendacion.benchmark }}</strong></div>
+            {% endif %}
+            {% if analisis.recomendacion.diferencia_pct is not none %}
+            <div><span>Diferencia vs alternativas</span>
+                <strong class="{% if analisis.recomendacion.diferencia_pct < 0 %}positive-value{% endif %}">
+                    {{ analisis.recomendacion.diferencia_pct }}%
+                </strong>
+            </div>
+            {% endif %}
+            {% if analisis.recomendacion.cantidad %}
+            <div><span>Costo estimado sugerido</span><strong>{{ analisis.recomendacion.costo_recomendado }}</strong></div>
+            {% endif %}
+            {% if analisis.recomendacion.ahorro_estimado %}
+            <div><span>Ahorro potencial</span><strong class="positive-value">{{ analisis.recomendacion.ahorro_estimado }}</strong></div>
+            {% endif %}
+        </div>
+
+        <div class="recommendation-footer">
+            <i class="bi bi-shield-check"></i>
+            Recomendación basada en historial del mismo producto, unidad y moneda. Los proveedores con 2 o más OC tienen prioridad para evitar recomendar por una única compra aislada.
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card content-card mt-4"><div class="card-body">
+        <div class="card-title-area">
+            <div><h3>Comparación de Proveedores</h3><p>La mediana es el precio de referencia usado para ordenar y recomendar.</p></div>
+            <i class="bi bi-people"></i>
+        </div>
+        <div class="table-responsive">
+            <table class="table purchase-table">
+                <thead><tr>
+                    <th>Proveedor</th><th class="text-center">OC</th><th>Última compra</th>
+                    <th class="text-end">Último precio</th><th class="text-end">Promedio</th>
+                    <th class="text-end">Mediana</th><th class="text-end">Mínimo</th><th class="text-end">Máximo</th>
+                    {% if cantidad_simulacion %}<th class="text-end">Costo estimado</th>{% endif %}
+                </tr></thead>
+                <tbody>
+                {% for item in analisis.comparacion %}
+                    <tr class="{% if analisis.recomendacion and item.proveedor == analisis.recomendacion.proveedor %}recommended-row{% endif %}">
+                        <td><strong>{{ item.proveedor }}</strong>
+                            {% if analisis.recomendacion and item.proveedor == analisis.recomendacion.proveedor %}
+                            <span class="recommended-mini-badge">Sugerido</span>{% endif %}
+                        </td>
+                        <td class="text-center">{{ item.ordenes }}</td>
+                        <td>{{ item.ultima_compra }}</td>
+                        <td class="text-end">{{ item.ultimo_precio }}</td>
+                        <td class="text-end">{{ item.promedio }}</td>
+                        <td class="text-end"><strong>{{ item.mediana }}</strong></td>
+                        <td class="text-end">{{ item.minimo }}</td>
+                        <td class="text-end">{{ item.maximo }}</td>
+                        {% if cantidad_simulacion %}
+                        <td class="text-end"><strong class="estimated-cost" data-price="{{ item.mediana_raw }}" data-quantity="{{ cantidad_simulacion }}" data-currency="{{ analisis.moneda }}"></strong></td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div></div>
+
+    <div class="card content-card mt-4"><div class="card-body">
+        <div class="card-title-area">
+            <div><h3>Movimientos Históricos</h3><p>Últimos 100 registros del producto en {{ analisis.moneda }}.</p></div>
+            <i class="bi bi-list-ul"></i>
+        </div>
+        <div class="table-responsive">
+            <table class="table purchase-table">
+                <thead><tr><th>Fecha</th><th>OC</th><th>Proveedor</th><th>Hospital</th><th class="text-end">Cantidad</th><th class="text-end">Precio Unit.</th><th class="text-end">Total Línea</th></tr></thead>
+                <tbody>
+                {% for item in analisis.movimientos_detalle %}
+                    <tr>
+                        <td>{{ item.fecha }}</td>
+                        <td><a class="table-link" href="{{ url_for('ordenes_compra', q=item.numero_oc) }}">{{ item.numero_oc }}</a></td>
+                        <td>{{ item.proveedor }}</td><td>{{ item.hospital }}</td>
+                        <td class="text-end">{{ item.cantidad }}</td><td class="text-end"><strong>{{ item.precio }}</strong></td><td class="text-end">{{ item.total }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div></div>
+
+    <script id="product-data" type="application/json">{{ analisis.grafico | tojson }}</script>
+
+    {% elif busqueda %}
+        {% if productos %}
+        <div class="results-header"><div><strong>Productos encontrados</strong><span>{{ productos|length }} coincidencia(s)</span></div></div>
+        <div class="product-search-grid">
+            {% for producto in productos %}
+            <div class="product-result-card product-result-card-v2">
+                <div class="product-result-top">
+                    <div class="product-result-icon"><i class="bi bi-box-seam"></i></div>
+                    <div class="product-result-heading">
+                        <h3>{{ producto.descripcion }}</h3>
+                        <p>Unidad: {{ producto.unidad or "-" }} · <span class="currency-badge">{{ producto.moneda }}</span></p>
+                    </div>
+                </div>
+
+                <div class="product-price-grid">
+                    <div class="price-highlight">
+                        <span>Último precio</span>
+                        <strong>{{ producto.ultimo_precio }}</strong>
+                    </div>
+                    <div>
+                        <span>Precio mínimo histórico</span>
+                        <strong class="price-min">{{ producto.precio_minimo }}</strong>
+                    </div>
+                </div>
+
+                <div class="product-result-meta">
+                    <div><span>Último proveedor</span><strong>{{ producto.ultimo_proveedor or '-' }}</strong></div>
+                    <div><span>Última compra</span><strong>{{ producto.ultima_compra }}</strong></div>
+                    <div><span>Historial</span><strong>{{ producto.ordenes }} OC · {{ producto.proveedores }} proveedor(es)</strong></div>
+                </div>
+
+                <div class="product-result-footer">
+                    <span class="muted-note">Consulta histórica del mismo producto, unidad y moneda.</span>
+                    <a class="btn btn-outline-primary" href="{{ url_for('productos', q=busqueda, descripcion=producto.descripcion, unidad=producto.unidad, moneda=producto.moneda) }}">Analizar <i class="bi bi-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="bi bi-search"></i><h3>Sin resultados</h3><p>No encontramos productos que coincidan con "{{ busqueda }}".</p></div>
+        {% endif %}
+    {% else %}
+    <div class="empty-state"><i class="bi bi-search"></i><h3>Busca un producto</h3><p>Escribe una descripción parcial. Primero elegirás el producto exacto y luego podrás comparar sus proveedores.</p></div>
+    {% endif %}
+</div>
+{% endblock %}

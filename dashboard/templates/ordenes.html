@@ -1,0 +1,437 @@
+{% extends "base.html" %}
+
+{% block title %}
+Órdenes de Compra | ComprasAnalytics
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid px-0">
+
+    <div class="page-title">
+
+        <div>
+
+            <h2>
+                Órdenes de Compra
+            </h2>
+
+            <p>
+                Consulte el detalle completo de una orden de compra.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <form method="get" class="search-panel">
+
+        <div class="input-group input-group-lg">
+
+            <span class="input-group-text">
+                <i class="bi bi-file-earmark-text"></i>
+            </span>
+
+            <input
+                type="text"
+                name="q"
+                class="form-control"
+                placeholder="Ejemplo: RM-HCN-2482"
+                value="{{ busqueda }}"
+                autofocus
+            >
+
+            <button
+                class="btn btn-primary px-4"
+                type="submit"
+            >
+                Buscar OC
+            </button>
+
+        </div>
+
+    </form>
+
+
+    {% if oc %}
+
+    <div class="row g-4">
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card kpi-card h-100">
+
+                <div class="card-body">
+
+                    <div class="kpi-header">
+                        <span>Orden de Compra</span>
+                    </div>
+
+                    <div class="oc-value">
+                        {{ oc.numero_oc }}
+                    </div>
+
+                    <div class="kpi-description">
+                        {{ oc.hospital }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card kpi-card h-100">
+
+                <div class="card-body">
+
+                    <div class="kpi-header">
+                        <span>Fecha</span>
+                    </div>
+
+                    <div class="oc-value">
+                        {{ oc.fecha }}
+                    </div>
+
+                    <div class="kpi-description">
+                        fecha de emisión
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card kpi-card h-100">
+
+                <div class="card-body">
+
+                    <div class="kpi-header">
+                        <span>Moneda</span>
+                    </div>
+
+                    <div class="oc-value">
+                        {{ oc.moneda }}
+                    </div>
+
+                    <div class="kpi-description">
+                        moneda de la OC
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card kpi-card h-100">
+
+                <div class="card-body">
+
+                    <div class="kpi-header">
+                        <span>Total</span>
+                    </div>
+
+                    <div class="oc-value">
+                        {{ oc.total }}
+                    </div>
+
+                    <div class="kpi-description">
+                        total documento
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="row g-4 mt-1">
+
+        <div class="col-xl-6">
+
+            <div class="card content-card h-100">
+
+                <div class="card-body">
+
+                    <div class="card-title-area">
+
+                        <div>
+                            <h3>Proveedor</h3>
+                            <p>Información comercial.</p>
+                        </div>
+
+                        <i class="bi bi-building"></i>
+
+                    </div>
+
+
+                    <div class="detail-list">
+
+                        <div>
+                            <span>Proveedor</span>
+                            <strong>{{ oc.proveedor }}</strong>
+                        </div>
+
+                        <div>
+                            <span>RUT</span>
+                            <strong>{{ oc.rut }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Vendedor</span>
+                            <strong>{{ oc.vendedor }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Teléfono</span>
+                            <strong>{{ oc.telefono or "-" }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Email</span>
+                            <strong>{{ oc.email or "-" }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Forma de pago</span>
+                            <strong>{{ oc.forma_pago }}</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-6">
+
+            <div class="card content-card h-100">
+
+                <div class="card-body">
+
+                    <div class="card-title-area">
+
+                        <div>
+                            <h3>Información Interna</h3>
+                            <p>Datos asociados a la compra.</p>
+                        </div>
+
+                        <i class="bi bi-person-check"></i>
+
+                    </div>
+
+
+                    <div class="detail-list">
+
+                        <div>
+                            <span>Solicitante</span>
+                            <strong>{{ oc.solicitante or "-" }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Primer aprobador</span>
+                            <strong>{{ oc.aprobador or "-" }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Solicitud</span>
+                            <strong>{{ oc.solicitud or "-" }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Estado</span>
+                            <strong>{{ oc.estado }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Subtotal</span>
+                            <strong>{{ oc.subtotal }}</strong>
+                        </div>
+
+                        <div>
+                            <span>IVA</span>
+                            <strong>{{ oc.iva }}</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% if oc.nota %}
+
+    <div class="card content-card mt-4">
+
+        <div class="card-body">
+
+            <div class="card-title-area">
+
+                <div>
+                    <h3>Nota Interna</h3>
+                    <p>Información registrada en la OC.</p>
+                </div>
+
+                <i class="bi bi-journal-text"></i>
+
+            </div>
+
+            <p class="internal-note">
+                {{ oc.nota }}
+            </p>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <div class="card content-card mt-4">
+
+        <div class="card-body">
+
+            <div class="card-title-area">
+
+                <div>
+
+                    <h3>
+                        Artículos
+                    </h3>
+
+                    <p>
+                        {{ articulos|length }} líneas en la orden.
+                    </p>
+
+                </div>
+
+                <i class="bi bi-box-seam"></i>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table purchase-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Ítem</th>
+                            <th>Código</th>
+                            <th>Descripción</th>
+                            <th>Unidad</th>
+                            <th>Cantidad</th>
+                            <th class="text-end">Precio Unit.</th>
+                            <th class="text-end">Total</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in articulos %}
+
+                        <tr>
+
+                            <td>{{ item.item }}</td>
+
+                            <td>{{ item.codigo }}</td>
+
+                            <td class="product-cell">
+                                <strong>
+                                    {{ item.descripcion }}
+                                </strong>
+                            </td>
+
+                            <td>{{ item.unidad }}</td>
+
+                            <td>{{ item.cantidad }}</td>
+
+                            <td class="text-end">
+                                {{ item.precio }}
+                            </td>
+
+                            <td class="text-end">
+                                <strong>
+                                    {{ item.total }}
+                                </strong>
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% elif busqueda %}
+
+    <div class="empty-state">
+
+        <i class="bi bi-file-earmark-x"></i>
+
+        <h3>
+            Orden no encontrada
+        </h3>
+
+        <p>
+            No encontramos una OC asociada a "{{ busqueda }}".
+        </p>
+
+    </div>
+
+
+    {% else %}
+
+    <div class="empty-state">
+
+        <i class="bi bi-file-earmark-text"></i>
+
+        <h3>
+            Buscar una orden
+        </h3>
+
+        <p>
+            Ingrese el número de la orden de compra.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,245 @@
+<!doctype html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>
+        {% block title %}
+        ComprasAnalytics
+        {% endblock %}
+    </title>
+
+
+    <!-- Bootstrap -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- Bootstrap Icons -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    >
+
+
+    <!-- CSS propio -->
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/styles.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+
+<div class="app-layout">
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+
+        <div class="sidebar-brand">
+
+            <div class="brand-icon">
+
+                <i class="bi bi-bar-chart-fill"></i>
+
+            </div>
+
+
+            <div>
+
+                <h1>
+                    ComprasAnalytics
+                </h1>
+
+                <p>
+                    GrupoPuentes
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- NAVEGACIÓN -->
+
+        <nav class="nav flex-column sidebar-nav">
+
+
+            <a
+                href="{{ url_for('inicio') }}"
+                class="nav-link {% if pagina == 'inicio' %}active{% endif %}"
+            >
+
+                <i class="bi bi-house-door"></i>
+
+                <span>
+                    Inicio
+                </span>
+
+            </a>
+
+
+            <a
+                href="{{ url_for('dashboard') }}"
+                class="nav-link {% if pagina == 'dashboard' %}active{% endif %}"
+            >
+
+                <i class="bi bi-grid"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                href="{{ url_for('productos') }}"
+                class="nav-link {% if pagina == 'productos' %}active{% endif %}"
+            >
+
+                <i class="bi bi-search"></i>
+
+                <span>
+                    Buscar Producto
+                </span>
+
+            </a>
+
+
+            <a
+                href="{{ url_for('proveedores') }}"
+                class="nav-link {% if pagina == 'proveedores' %}active{% endif %}"
+            >
+
+                <i class="bi bi-buildings"></i>
+
+                <span>
+                    Proveedores
+                </span>
+
+            </a>
+
+
+            <a
+                href="{{ url_for('precios') }}"
+                class="nav-link {% if pagina == 'precios' %}active{% endif %}"
+            >
+
+                <i class="bi bi-graph-up-arrow"></i>
+
+                <span>
+                    Análisis de Precios
+                </span>
+
+            </a>
+
+
+            <a
+                href="{{ url_for('alertas') }}"
+                class="nav-link {% if pagina == 'alertas' %}active{% endif %}"
+            >
+
+                <i class="bi bi-clock-history"></i>
+
+                <span>
+                    Historial y Control
+                </span>
+
+            </a>
+
+
+
+
+
+            <a
+                href="{{ url_for('ordenes_compra') }}"
+                class="nav-link {% if pagina == 'ordenes' %}active{% endif %}"
+            >
+
+                <i class="bi bi-file-earmark-text"></i>
+
+                <span>
+                    Órdenes de Compra
+                </span>
+
+            </a>
+
+
+        </nav>
+
+
+        <!-- FOOTER -->
+
+        <div class="sidebar-footer">
+
+            <strong>
+                Sistema de Compras
+            </strong>
+
+            <span>
+                Constitución · Parral · Cauquenes
+            </span>
+
+        </div>
+
+
+    </aside>
+
+
+    <!-- CONTENIDO -->
+
+    <main class="main-content">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+
+</div>
+
+
+<!-- Bootstrap -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+<!-- Chart.js -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js">
+</script>
+
+
+<!-- JavaScript propio -->
+
+<script
+    src="{{ url_for('static', filename='js/dashboard.js') }}">
+</script>
+
+
+</body>
+
+</html>

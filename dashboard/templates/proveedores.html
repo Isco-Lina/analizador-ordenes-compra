@@ -1,0 +1,949 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Proveedores | ComprasAnalytics
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid px-0">
+
+
+    <!-- ====================================================
+         ENCABEZADO
+         ==================================================== -->
+
+    <div class="page-title">
+
+        <div>
+
+            <h2>
+                Proveedores
+            </h2>
+
+            <p>
+                Consulta el historial, productos y actividad
+                de los proveedores registrados.
+            </p>
+
+        </div>
+
+        <div class="data-status">
+
+            <span></span>
+
+            Datos históricos
+
+        </div>
+
+    </div>
+
+
+    <!-- ====================================================
+         BUSCADOR
+         ==================================================== -->
+
+    <div class="search-panel">
+
+        <form method="get">
+
+            <div class="row g-3 align-items-end">
+
+
+                <div class="col-xl-10">
+
+                    <label class="form-label">
+                        Buscar proveedor
+                    </label>
+
+                    <div class="input-group">
+
+                        <span class="input-group-text">
+
+                            <i class="bi bi-search"></i>
+
+                        </span>
+
+                        <input
+                            type="text"
+                            name="q"
+                            class="form-control"
+                            value="{{ busqueda }}"
+                            placeholder="Nombre del proveedor o RUT"
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-xl-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary w-100"
+                    >
+
+                        Buscar
+
+                    </button>
+
+                </div>
+
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- ====================================================
+         CATÁLOGO DE PROVEEDORES
+         ==================================================== -->
+
+    {% if resultados and not ficha %}
+    <div class="supplier-catalog-header">
+        <div>
+            <span class="section-eyebrow">{% if busqueda %}Resultados{% else %}Principales proveedores{% endif %}</span>
+            <h3>{% if busqueda %}Coincidencias encontradas{% else %}Top 25 por actividad histórica{% endif %}</h3>
+            <p>{% if busqueda %}Busca también por productos frecuentes del proveedor.{% else %}Explora proveedores sin necesidad de conocer su nombre de antemano.{% endif %}</p>
+        </div>
+        {% if not busqueda %}
+            {% if not mostrar_todos %}
+            <a href="{{ url_for('proveedores', todos=1) }}" class="btn btn-outline-primary"><i class="bi bi-list-ul me-2"></i>Ver todos los proveedores ({{ total_catalogo }})</a>
+            {% else %}
+            <a href="{{ url_for('proveedores') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-up me-2"></i>Volver al Top 25</a>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="row g-4">
+        {% for proveedor in resultados %}
+        <div class="col-xl-4 col-lg-6">
+            <a href="{{ url_for('proveedores', proveedor=proveedor.nombre) }}" class="supplier-card supplier-card-clickable h-100 d-block">
+                <div class="supplier-card-header">
+                    <div class="supplier-icon"><i class="bi bi-buildings"></i></div>
+                    <div><h3>{{ proveedor.nombre }}</h3><span>RUT: {{ proveedor.rut or "-" }}</span></div>
+                </div>
+                <div class="supplier-stats">
+                    <div><span>Órdenes</span><strong>{{ proveedor.ordenes }}</strong></div>
+                    <div><span>Productos</span><strong>{{ proveedor.productos }}</strong></div>
+                    <div><span>Última compra</span><strong>{{ proveedor.ultima_compra }}</strong></div>
+                </div>
+                {% if proveedor.muestras %}
+                <div class="supplier-samples">
+                    <span>Compras frecuentes</span>
+                    <p>{{ proveedor.muestras|join(' · ') }}</p>
+                </div>
+                {% endif %}
+                <div class="supplier-card-action">Ver ficha del proveedor <i class="bi bi-arrow-right"></i></div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ====================================================
+         FICHA DEL PROVEEDOR
+         ==================================================== -->
+
+    {% if ficha %}
+
+
+    <!-- CABECERA -->
+
+    <div class="card content-card supplier-profile-header">
+
+        <div class="card-body">
+
+
+            <div class="supplier-profile-title">
+
+                <div class="supplier-profile-icon">
+
+                    <i class="bi bi-building"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        Ficha del proveedor
+                    </span>
+
+                    <h2>
+                        {{ ficha.nombre }}
+                    </h2>
+
+                    <p>
+                        RUT {{ ficha.rut or "-" }}
+                    </p>
+
+                </div>
+
+
+                <div class="supplier-profile-actions">
+
+                    <a
+                        href="{{ url_for('proveedores') }}"
+                        class="btn btn-outline-secondary"
+                    >
+
+                        <i class="bi bi-arrow-left me-2"></i>
+
+                        Nueva búsqueda
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- KPI -->
+
+    <div class="row g-4 mt-1">
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card kpi-card h-100">
+
+                <div class="card-body">
+
+                    <div class="kpi-header">
+
+                        <span>
+                            Órdenes de Compra
+                        </span>
+
+                        <div class="kpi-icon">
+
+                            <i class="bi bi-file-earmark-text"></i>
+
+                        </div>
+
+                    </div>
+
+                    <div class="kpi-value">
+                        {{ ficha.ordenes }}
+                    </div>
+
+                    <div class="kpi-description">
+                        OC registradas
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card kpi-card h-100">
+
+                <div class="card-body">
+
+                    <div class="kpi-header">
+
+                        <span>
+                            Productos
+                        </span>
+
+                        <div class="kpi-icon">
+
+                            <i class="bi bi-box-seam"></i>
+
+                        </div>
+
+                    </div>
+
+                    <div class="kpi-value">
+                        {{ ficha.productos }}
+                    </div>
+
+                    <div class="kpi-description">
+                        descripciones distintas
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card kpi-card h-100">
+
+                <div class="card-body">
+
+                    <div class="kpi-header">
+
+                        <span>
+                            Primera Compra
+                        </span>
+
+                        <div class="kpi-icon">
+
+                            <i class="bi bi-calendar3"></i>
+
+                        </div>
+
+                    </div>
+
+                    <div class="kpi-date-value">
+                        {{ ficha.primera_compra }}
+                    </div>
+
+                    <div class="kpi-description">
+                        primer registro histórico
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card kpi-card h-100">
+
+                <div class="card-body">
+
+                    <div class="kpi-header">
+
+                        <span>
+                            Última Compra
+                        </span>
+
+                        <div class="kpi-icon">
+
+                            <i class="bi bi-clock-history"></i>
+
+                        </div>
+
+                    </div>
+
+                    <div class="kpi-date-value">
+                        {{ ficha.ultima_compra }}
+                    </div>
+
+                    <div class="kpi-description">
+                        último registro histórico
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ====================================================
+         MONEDAS
+         ==================================================== -->
+
+    <div class="card content-card mt-4">
+
+        <div class="card-body">
+
+
+            <div class="card-title-area">
+
+                <div>
+
+                    <h3>
+                        Compras Acumuladas
+                    </h3>
+
+                    <p>
+                        Montos históricos separados por moneda.
+                    </p>
+
+                </div>
+
+                <i class="bi bi-cash-stack"></i>
+
+            </div>
+
+
+            <div class="supplier-currency-grid">
+
+                {% for item in ficha.totales_moneda %}
+
+                <div class="supplier-currency-card">
+
+                    <div>
+
+                        <span class="currency-badge">
+                            {{ item.moneda }}
+                        </span>
+
+                        <small>
+                            {{ item.ordenes }} OC
+                        </small>
+
+                    </div>
+
+                    <strong>
+                        {{ item.total }}
+                    </strong>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <div class="supplier-meta-row">
+
+                <div>
+
+                    <span>
+                        Hospitales
+                    </span>
+
+                    <strong>
+                        {{ ficha.hospitales|join(" · ") }}
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Monedas registradas
+                    </span>
+
+                    <strong>
+                        {{ ficha.monedas|join(" · ") }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ====================================================
+         GRÁFICOS
+         ==================================================== -->
+
+    <div class="row g-4 mt-1">
+
+
+        <div class="col-xl-7">
+
+            <div class="card content-card h-100">
+
+                <div class="card-body">
+
+                    <div class="card-title-area">
+
+                        <div>
+
+                            <h3>
+                                Actividad Histórica
+                            </h3>
+
+                            <p>
+                                Cantidad de órdenes de compra
+                                registradas por año.
+                            </p>
+
+                        </div>
+
+                        <i class="bi bi-graph-up"></i>
+
+                    </div>
+
+
+                    <div class="supplier-chart-container">
+
+                        <canvas
+                            id="graficoActividadProveedor"
+                        ></canvas>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-5">
+
+            <div class="card content-card h-100">
+
+                <div class="card-body">
+
+                    <div class="card-title-area">
+
+                        <div>
+
+                            <h3>
+                                Presencia por Hospital
+                            </h3>
+
+                            <p>
+                                Distribución de OC por proyecto.
+                            </p>
+
+                        </div>
+
+                        <i class="bi bi-hospital"></i>
+
+                    </div>
+
+
+                    <div class="supplier-chart-container">
+
+                        <canvas
+                            id="graficoHospitalProveedor"
+                        ></canvas>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ====================================================
+         PRODUCTOS
+         ==================================================== -->
+
+    <div class="card content-card mt-4">
+
+        <div class="card-body">
+
+
+            <div class="card-title-area">
+
+                <div>
+
+                    <h3>
+                        Productos Comprados
+                    </h3>
+
+                    <p>
+                        Historial de precios registrado para
+                        este proveedor.
+                    </p>
+
+                </div>
+
+                <i class="bi bi-box-seam"></i>
+
+            </div>
+
+
+            <div class="supplier-table-note">
+
+                <i class="bi bi-info-circle"></i>
+
+                Los precios se comparan únicamente dentro de la
+                misma unidad de medida y moneda.
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table purchase-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Producto
+                            </th>
+
+                            <th>
+                                Unidad
+                            </th>
+
+                            <th>
+                                Moneda
+                            </th>
+
+                            <th class="text-center">
+                                Compras
+                            </th>
+
+                            <th>
+                                Última compra
+                            </th>
+
+                            <th class="text-end">
+                                Último precio
+                            </th>
+
+                            <th class="text-end">
+                                Promedio
+                            </th>
+
+                            <th class="text-end">
+                                Mínimo
+                            </th>
+
+                            <th class="text-end">
+                                Máximo
+                            </th>
+
+                            <th></th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for producto in ficha.productos_detalle %}
+
+                        <tr>
+
+                            <td class="product-cell">
+
+                                <strong>
+                                    {{ producto.descripcion }}
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+                                {{ producto.unidad or "-" }}
+                            </td>
+
+
+                            <td>
+
+                                <span class="currency-badge">
+                                    {{ producto.moneda }}
+                                </span>
+
+                            </td>
+
+
+                            <td class="text-center">
+                                {{ producto.compras }}
+                            </td>
+
+
+                            <td>
+                                {{ producto.ultima_compra }}
+                            </td>
+
+
+                            <td class="text-end">
+
+                                <strong>
+                                    {{ producto.ultimo_precio }}
+                                </strong>
+
+                            </td>
+
+
+                            <td class="text-end">
+                                {{ producto.promedio }}
+                            </td>
+
+
+                            <td class="text-end">
+                                {{ producto.minimo }}
+                            </td>
+
+
+                            <td class="text-end">
+                                {{ producto.maximo }}
+                            </td>
+
+
+                            <td class="text-end">
+
+                                <a
+                                    href="{{ url_for(
+                                        'precios',
+                                        producto=producto.descripcion,
+                                        proveedor=ficha.nombre,
+                                        moneda=producto.moneda
+                                    ) }}"
+                                    class="table-action"
+                                    title="Analizar precios"
+                                >
+
+                                    <i class="bi bi-graph-up-arrow"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            {% if ficha.productos_detalle|length >= 100 %}
+
+            <div class="table-limit-note">
+
+                Se muestran los 100 productos más recientes.
+
+            </div>
+
+            {% endif %}
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ====================================================
+         HISTORIAL OC
+         ==================================================== -->
+
+    <div class="card content-card mt-4">
+
+        <div class="card-body">
+
+
+            <div class="card-title-area">
+
+                <div>
+
+                    <h3>
+                        Historial de Órdenes de Compra
+                    </h3>
+
+                    <p>
+                        Documentos asociados a este proveedor.
+                    </p>
+
+                </div>
+
+                <i class="bi bi-clock-history"></i>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table purchase-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                OC
+                            </th>
+
+                            <th>
+                                Fecha
+                            </th>
+
+                            <th>
+                                Hospital
+                            </th>
+
+                            <th>
+                                Solicitante
+                            </th>
+
+                            <th>
+                                Moneda
+                            </th>
+
+                            <th class="text-end">
+                                Total
+                            </th>
+
+                            <th>
+                                Estado
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for oc in ficha.historial_oc %}
+
+                        <tr>
+
+                            <td>
+
+                                <a
+                                    href="{{ url_for(
+                                        'ordenes_compra',
+                                        q=oc.numero_oc
+                                    ) }}"
+                                    class="table-link"
+                                >
+
+                                    {{ oc.numero_oc }}
+
+                                </a>
+
+                            </td>
+
+
+                            <td>
+                                {{ oc.fecha }}
+                            </td>
+
+
+                            <td>
+                                {{ oc.hospital }}
+                            </td>
+
+
+                            <td>
+                                {{ oc.solicitante or "-" }}
+                            </td>
+
+
+                            <td>
+
+                                <span class="currency-badge">
+                                    {{ oc.moneda }}
+                                </span>
+
+                            </td>
+
+
+                            <td class="text-end">
+
+                                <strong>
+                                    {{ oc.total }}
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+
+                                {% if oc.estado == "OK" %}
+
+                                <span class="status-badge status-ok">
+                                    OK
+                                </span>
+
+                                {% else %}
+
+                                <span class="status-badge status-review">
+                                    {{ oc.estado }}
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ====================================================
+         DATOS DE LOS GRÁFICOS
+         ==================================================== -->
+
+    <script
+        id="supplier-data"
+        type="application/json"
+    >
+    {
+        "actividad":
+            {{ ficha.grafico_actividad | tojson }},
+
+        "hospitales":
+            {{ ficha.grafico_hospitales | tojson }}
+    }
+    </script>
+
+
+    {% elif busqueda and not resultados %}
+
+
+    <!-- SIN RESULTADOS -->
+
+    <div class="empty-state">
+
+        <i class="bi bi-search"></i>
+
+        <h3>
+            No encontramos proveedores
+        </h3>
+
+        <p>
+            No existen proveedores que coincidan con
+            "{{ busqueda }}".
+        </p>
+
+    </div>
+
+
+    {% endif %}
+
+
+</div>
+
+
+{% endblock %}

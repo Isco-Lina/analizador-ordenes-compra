@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | ComprasAnalytics{% endblock %}
+{% block content %}
+<div class="container-fluid px-0">
+    <div class="page-title">
+        <div><h2>Dashboard General</h2><p>Visión ejecutiva del comportamiento histórico de las compras.</p></div>
+        <div class="data-status"><span></span>Datos disponibles</div>
+    </div>
+
+    <form method="get" class="filter-panel">
+        <div class="row g-3 align-items-end">
+            <div class="col-xl-3"><label class="form-label">Hospital</label><select name="hospital" class="form-select"><option value="">Todos los hospitales</option>{% for hospital in hospitales_disponibles %}<option value="{{ hospital }}" {% if hospital == hospital_seleccionado %}selected{% endif %}>{{ hospital }}</option>{% endfor %}</select></div>
+            <div class="col-xl-2"><label class="form-label">Moneda</label><select name="moneda" class="form-select">{% for moneda in monedas_disponibles %}<option value="{{ moneda }}" {% if moneda == moneda_seleccionada %}selected{% endif %}>{{ moneda }}</option>{% endfor %}</select></div>
+            <div class="col-xl-2"><label class="form-label">Año</label><select name="anio" class="form-select"><option value="">Todos los años</option>{% for anio in años_disponibles %}<option value="{{ anio }}" {% if anio|string == año_seleccionado %}selected{% endif %}>{{ anio }}</option>{% endfor %}</select></div>
+            <div class="col-xl-3"><label class="form-label">Proveedores en gráfico</label><select name="proveedores" class="form-select"><option value="10" {% if limite_proveedores == '10' %}selected{% endif %}>Top 10</option><option value="25" {% if limite_proveedores == '25' %}selected{% endif %}>Top 25</option><option value="todos" {% if limite_proveedores == 'todos' %}selected{% endif %}>Todos ({{ total_proveedores_grafico }})</option></select></div>
+            <div class="col-xl-2"><button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel me-2"></i>Aplicar</button></div>
+        </div>
+    </form>
+
+    <div class="row g-4">
+        {% for titulo, valor, texto, icono in [
+            ('Total Comprado', total_comprado, moneda_seleccionada, 'cash-stack'),
+            ('Órdenes de Compra', total_oc, 'documentos', 'file-earmark-text'),
+            ('Proveedores', total_proveedores, 'proveedores distintos', 'buildings'),
+            ('Movimientos', total_movimientos, 'líneas de artículos', 'box-seam')
+        ] %}
+        <div class="col-xl-3 col-md-6"><div class="card kpi-card h-100"><div class="card-body"><div class="kpi-header"><span>{{ titulo }}</span><div class="kpi-icon"><i class="bi bi-{{ icono }}"></i></div></div><div class="kpi-value {% if titulo == 'Total Comprado' %}kpi-value-money{% endif %}">{{ valor }}</div><div class="kpi-description">{{ texto }}</div></div></div></div>
+        {% endfor %}
+    </div>
+
+    <div class="card content-card mt-4"><div class="card-body">
+        <div class="card-title-area"><div><h3>Evolución de Compras</h3><p>Monto comprado mensualmente en {{ moneda_seleccionada }}.</p></div><i class="bi bi-graph-up"></i></div>
+        <div class="chart-container chart-large"><canvas id="graficoEvolucion"></canvas></div>
+    </div></div>
+
+    <div class="card content-card mt-4"><div class="card-body">
+        <div class="card-title-area">
+            <div><h3>Compras por proveedor</h3><p>Ranking por monto comprado. Puedes mostrar Top 10, Top 25 o los {{ total_proveedores_grafico }} proveedores que cumplen los filtros.</p></div>
+            <i class="bi bi-buildings"></i>
+        </div>
+        <div class="supplier-chart-scroll">
+            <div class="chart-container supplier-ranking-chart" style="height: {{ [420, (grafico_proveedores.labels|length * 30 + 90)]|max }}px;"><canvas id="graficoProveedores"></canvas></div>
+        </div>
+        <div class="supplier-ranking-note"><i class="bi bi-info-circle"></i><span>El monto se calcula solo en {{ moneda_seleccionada }}. El tooltip también muestra la cantidad de OC del proveedor.</span></div>
+    </div></div>
+
+    <div class="row g-4 mt-1">
+        <div class="col-xl-5"><div class="card content-card h-100"><div class="card-body">
+            <div class="card-title-area"><div><h3>Compras por Hospital</h3><p>Distribución del monto comprado.</p></div><i class="bi bi-hospital"></i></div>
+            <div class="chart-container"><canvas id="graficoHospitales"></canvas></div>
+            <div class="hospital-list">{% for item in hospitales %}<div class="hospital-row"><div><strong>{{ item.hospital }}</strong><span>{{ item.ordenes }} órdenes de compra</span></div><div class="hospital-total">{{ item.total }}</div></div>{% endfor %}</div>
+        </div></div></div>
+        <div class="col-xl-7"><div class="card content-card h-100"><div class="card-body">
+            <div class="card-title-area"><div><h3>Proveedores destacados</h3><p>Detalle de los proveedores visibles en el ranking.</p></div><a href="{{ url_for('proveedores') }}" class="table-link">Explorar proveedores</a></div>
+            <div class="table-responsive"><table class="table purchase-table"><thead><tr><th>Proveedor</th><th class="text-center">OC</th><th class="text-end">Monto</th></tr></thead><tbody>{% for item in top_proveedores[:15] %}<tr><td><a class="table-link" href="{{ url_for('proveedores', proveedor=item.proveedor) }}">{{ item.proveedor }}</a></td><td class="text-center">{{ item.ordenes }}</td><td class="text-end"><strong>{{ item.total }}</strong></td></tr>{% endfor %}</tbody></table></div>
+        </div></div></div>
+    </div>
+
+    <div class="card content-card mt-4"><div class="card-body">
+        <div class="card-title-area"><div><h3>Últimas Órdenes de Compra</h3><p>Últimos documentos correspondientes a los filtros seleccionados.</p></div><i class="bi bi-clock-history"></i></div>
+        <div class="table-responsive"><table class="table purchase-table"><thead><tr><th>OC</th><th>Fecha</th><th>Hospital</th><th>Proveedor</th><th>Moneda</th><th class="text-end">Total</th><th>Estado</th></tr></thead><tbody>{% for oc in ultimas_ordenes %}<tr><td><a href="{{ url_for('ordenes_compra', q=oc.numero_oc) }}" class="table-link">{{ oc.numero_oc }}</a></td><td>{{ oc.fecha }}</td><td>{{ oc.hospital }}</td><td>{{ oc.proveedor }}</td><td><span class="currency-badge">{{ oc.moneda }}</span></td><td class="text-end"><strong>{{ oc.total }}</strong></td><td>{% if oc.estado == 'OK' %}<span class="status-badge status-ok">OK</span>{% else %}<span class="status-badge status-review">{{ oc.estado }}</span>{% endif %}</td></tr>{% endfor %}</tbody></table></div>
+    </div></div>
+</div>
+
+<script id="dashboard-data" type="application/json">
+{
+    "moneda": {{ moneda_seleccionada | tojson }},
+    "simbolo": {{ simbolo_moneda | tojson }},
+    "evolucion": {{ grafico_evolucion | tojson }},
+    "hospitales": {{ grafico_hospitales | tojson }},
+    "proveedores": {{ grafico_proveedores | tojson }}
+}
+</script>
+{% endblock %}
