@@ -2323,7 +2323,35 @@ textarea {
 .recommendation-content { flex: 1; min-width: 0; }
 .recommendation-content h3 { margin: 0; color: var(--text); font-size: 18px; font-weight: 760; }
 .recommendation-content p { margin: 5px 0 0; color: var(--secondary); font-size: 11px; }
-.confidence-badge { flex: 0 0 auto; padding: 6px 10px; border-radius: 999px; font-size: 10px; font-weight: 700; }
+.confidence-badge {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    min-width: 118px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+}
+.confidence-solido {
+    background: var(--success-bg);
+    color: #047857;
+    border: 1px solid #a7f3d0;
+}
+.confidence-moderado {
+    background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #fed7aa;
+}
+.confidence-limitado {
+    background: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+/* Compatibilidad con etiquetas antiguas */
 .confidence-alta { background: var(--success-bg); color: #047857; border: 1px solid #d1fae5; }
 .confidence-media { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
 .confidence-baja { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; }

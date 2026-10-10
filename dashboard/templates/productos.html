@@ -147,8 +147,9 @@
                     · última compra {{ analisis.recomendacion.ultima_compra }}
                 </p>
             </div>
-            <div class="confidence-badge confidence-{{ analisis.recomendacion.confianza|lower }}">
-                Confianza {{ analisis.recomendacion.confianza }}
+            {% set historial_clase = 'solido' if analisis.recomendacion.confianza == 'Sólido' else ('moderado' if analisis.recomendacion.confianza == 'Moderado' else 'limitado') %}
+            <div class="confidence-badge confidence-{{ historial_clase }}">
+                Historial {{ analisis.recomendacion.confianza }}
             </div>
         </div>
 
@@ -173,7 +174,8 @@
 
         <div class="recommendation-footer">
             <i class="bi bi-shield-check"></i>
-            Recomendación basada en historial del mismo producto, unidad y moneda. Los proveedores con 2 o más OC tienen prioridad para evitar recomendar por una única compra aislada.
+            Referencia basada en el historial del mismo producto, unidad y moneda.
+            La etiqueta indica la cantidad de antecedentes disponibles para este proveedor.
         </div>
     </div>
     {% endif %}

@@ -828,20 +828,12 @@ def productos():
                         int((hoy - ultima_fecha.normalize()).days), 0
                     )
 
-                if (
-                    len(comparacion) >= 3
-                    and recomendado["ordenes"] >= 3
-                    and dias_antiguedad is not None
-                    and dias_antiguedad <= 365
-                ):
-                    confianza = "Alta"
-                elif (
-                    len(comparacion) >= 2
-                    and recomendado["ordenes"] >= 2
-                ):
-                    confianza = "Media"
+                if recomendado["ordenes"] >= 4:
+                    confianza = "Sólido"
+                elif recomendado["ordenes"] >= 2:
+                    confianza = "Moderado"
                 else:
-                    confianza = "Baja"
+                    confianza = "Limitado"
 
                 recomendacion = {
                     "proveedor": recomendado["proveedor"],
