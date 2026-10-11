@@ -7,3 +7,4 @@ data/pdf/*.pdf
 
 # Archivos generados
 data/output/*.xlsx
+data/output/*.html

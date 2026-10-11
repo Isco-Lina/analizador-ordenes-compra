@@ -201,6 +201,16 @@ http://127.0.0.1:5000
 
 ---
 
+## Generar dashboard HTML autónomo
+
+Además del dashboard Flask, el proyecto puede generar una versión HTML independiente utilizando directamente el archivo:
+
+```text
+data/output/ordenes_compra.xlsx
+```
+
+---
+
 ## Flujo completo de uso
 
 Después de clonar el repositorio, el flujo recomendado es:
