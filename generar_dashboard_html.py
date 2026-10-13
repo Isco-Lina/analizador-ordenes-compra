@@ -790,10 +790,9 @@ def generar_html(ordenes, detalle):
 
             <div class="home-hero">
                 <span class="section-eyebrow">COMPRASANALYTICS</span>
-                <h1>Toda la información de compras, en un solo lugar.</h1>
+                <h1>Toda la información de compras, proveedores y órdenes de compra.</h1>
                 <p>
-                    Consulta órdenes de compra, proveedores y productos desde una misma vista.
-                    Usa el historial disponible para revisar antecedentes y apoyar nuevas decisiones de compra.
+                    Encuentra rápidamente la información que necesitas y accede a un análisis completo de precios, proveedores y compras históricas.
                 </p>
                 <div class="home-search">
                     <div class="input-group input-group-lg">
@@ -3418,210 +3417,298 @@ def generar_html(ordenes, detalle):
     // ========================================================
 
     function renderOrdenes() {
-        const vista =
-            document.getElementById(
-                "view-ordenes"
-            );
+        const vista = document.getElementById("view-ordenes");
+
+        const anios = unicos(
+            ORDENES
+                .map(x => texto(x.fecha).substring(0, 4))
+                .filter(Boolean)
+        ).sort().reverse();
+
+        const ultimoAnio = anios[0] || "";
+        const meses = [
+            ["01", "Enero"], ["02", "Febrero"], ["03", "Marzo"], ["04", "Abril"],
+            ["05", "Mayo"], ["06", "Junio"], ["07", "Julio"], ["08", "Agosto"],
+            ["09", "Septiembre"], ["10", "Octubre"], ["11", "Noviembre"], ["12", "Diciembre"]
+        ];
 
         vista.innerHTML = `
         <div class="container-fluid px-0">
-
             <div class="page-title">
                 <div>
-                    <h2>
-                        Órdenes de Compra
-                    </h2>
-                    <p>
-                        Consulte el detalle completo de una OC.
-                    </p>
+                    <span class="page-badge">CONSULTA DE DOCUMENTOS</span>
+                    <h2>Órdenes de Compra</h2>
+                    <p>Busca una OC o revisa las órdenes emitidas por año y mes.</p>
                 </div>
+                <div class="data-status"><span></span>Datos disponibles</div>
             </div>
 
-            <div class="search-panel">
-                <div class="input-group input-group-lg">
-                    <input
-                        id="oc-q"
-                        class="form-control"
-                        placeholder="Ejemplo: RM-HCN-2482"
-                    >
+            <div class="filter-panel">
+                <div class="row g-3 align-items-end">
+                    <div class="col-xl-5">
+                        <label class="form-label">Buscar orden de compra</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input
+                                id="oc-q"
+                                class="form-control"
+                                placeholder="Ejemplo: RM-HCN-2482, HCN-2482..."
+                            >
+                        </div>
+                    </div>
 
-                    <button
-                        id="oc-buscar"
-                        class="btn btn-primary"
-                    >
-                        Buscar OC
+                    <div class="col-xl-2 col-md-4">
+                        <label class="form-label">Año</label>
+                        <select id="oc-anio" class="form-select">
+                            <option value="">Todos los años</option>
+                            ${anios.map(x => `<option value="${x}" ${x === ultimoAnio ? "selected" : ""}>${x}</option>`).join("")}
+                        </select>
+                    </div>
+
+                    <div class="col-xl-2 col-md-4">
+                        <label class="form-label">Mes</label>
+                        <select id="oc-mes" class="form-select">
+                            <option value="">Todos los meses</option>
+                            ${meses.map(([v, n]) => `<option value="${v}">${n}</option>`).join("")}
+                        </select>
+                    </div>
+
+                    <div class="col-xl-2 col-md-4">
+                        <label class="form-label">Mostrar</label>
+                        <select id="oc-limite" class="form-select">
+                            <option value="10" selected>10 OC</option>
+                            <option value="25">25 OC</option>
+                            <option value="0">Todas</option>
+                        </select>
+                    </div>
+
+                    <div class="col-xl-1">
+                        <button id="oc-buscar" class="btn btn-primary w-100">Buscar</button>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3 pt-3 border-top">
+                    <small class="text-muted">
+                        Puedes combinar el buscador con los filtros de año y mes.
+                    </small>
+                    <button id="oc-limpiar" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>Limpiar filtros
                     </button>
                 </div>
             </div>
 
             <div id="oc-resultado"></div>
+        </div>`;
 
-        </div>
-        `;
+        document.getElementById("oc-buscar").addEventListener("click", listarOrdenes);
+        document.getElementById("oc-q").addEventListener("keydown", e => {
+            if (e.key === "Enter") listarOrdenes();
+        });
+        ["oc-anio", "oc-mes", "oc-limite"].forEach(id => {
+            document.getElementById(id).addEventListener("change", listarOrdenes);
+        });
+        document.getElementById("oc-limpiar").addEventListener("click", () => {
+            document.getElementById("oc-q").value = "";
+            document.getElementById("oc-anio").value = ultimoAnio;
+            document.getElementById("oc-mes").value = "";
+            document.getElementById("oc-limite").value = "10";
+            listarOrdenes();
+        });
 
-        document
-            .getElementById(
-                "oc-buscar"
-            )
-            .addEventListener(
-                "click",
-                buscarOC
-            );
+        listarOrdenes();
+    }
+
+
+    function listarOrdenes() {
+        const q = texto(document.getElementById("oc-q")?.value).trim().toLowerCase();
+        const anio = texto(document.getElementById("oc-anio")?.value);
+        const mes = texto(document.getElementById("oc-mes")?.value);
+        const limite = Number(document.getElementById("oc-limite")?.value || 10);
+        const contenedor = document.getElementById("oc-resultado");
+
+        let resultados = ORDENES.filter(o => {
+            const fecha = texto(o.fecha);
+            if (anio && fecha.substring(0, 4) !== anio) return false;
+            if (mes && fecha.substring(5, 7) !== mes) return false;
+
+            if (q) {
+                const combinado = [
+                    o.numero_oc,
+                    o.proveedor,
+                    o.hospital,
+                    o.rut_proveedor
+                ].map(texto).join(" ").toLowerCase();
+
+                if (!combinado.includes(q)) return false;
+            }
+
+            return true;
+        });
+
+        resultados.sort((a, b) =>
+            fechaValor(b.fecha) - fechaValor(a.fecha) ||
+            texto(b.numero_oc).localeCompare(texto(a.numero_oc), "es")
+        );
+
+        const totalEncontradas = resultados.length;
+        const visibles = limite > 0 ? resultados.slice(0, limite) : resultados;
+
+        const periodo = anio
+            ? (mes ? `${nombreMes(mes)} ${anio}` : anio)
+            : (mes ? nombreMes(mes) : "todo el historial");
+
+        if (!resultados.length) {
+            contenedor.innerHTML = `
+            <div class="static-empty">
+                <i class="bi bi-file-earmark-x"></i><br>
+                <strong>No se encontraron órdenes de compra.</strong><br>
+                Cambia el número de OC, año o mes seleccionado.
+            </div>`;
+            return;
+        }
+
+        contenedor.innerHTML = `
+        <div class="card content-card">
+            <div class="card-body">
+                <div class="results-header">
+                    <div>
+                        <strong>Órdenes encontradas</strong>
+                        <span>${totalEncontradas}</span>
+                    </div>
+                    <small class="text-muted">
+                        ${limite > 0
+                            ? `Mostrando ${visibles.length} de ${totalEncontradas} · ${escapar(periodo)}`
+                            : `Mostrando todas · ${escapar(periodo)}`}
+                    </small>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table purchase-table">
+                        <thead>
+                            <tr>
+                                <th>OC</th>
+                                <th>Fecha</th>
+                                <th>Hospital</th>
+                                <th>Proveedor</th>
+                                <th>Moneda</th>
+                                <th class="text-end">Total</th>
+                                <th class="text-center">Detalle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${visibles.map(o => `
+                            <tr>
+                                <td>
+                                    <button
+                                        class="btn btn-link table-link p-0 text-start"
+                                        onclick="abrirOC('${escapar(o.numero_oc)}')"
+                                    >
+                                        ${escapar(o.numero_oc)}
+                                    </button>
+                                </td>
+                                <td>${fechaTexto(o.fecha)}</td>
+                                <td>${escapar(o.hospital || "-")}</td>
+                                <td>${escapar(o.proveedor || "-")}</td>
+                                <td><span class="currency-badge">${escapar(o.moneda || "-")}</span></td>
+                                <td class="text-end"><strong>${formatoMoneda(o.total, o.moneda)}</strong></td>
+                                <td class="text-center">
+                                    <button
+                                        class="table-action"
+                                        title="Ver detalle de la OC"
+                                        onclick="abrirOC('${escapar(o.numero_oc)}')"
+                                    >
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>`).join("")}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>`;
     }
 
 
     function abrirOC(numeroOC) {
-        irA("ordenes");
+        const vistaActiva = document.getElementById("view-ordenes")?.classList.contains("active");
+        if (!vistaActiva) irA("ordenes");
 
-        const input =
-            document.getElementById(
-                "oc-q"
-            );
+        const input = document.getElementById("oc-q");
+        if (input) input.value = numeroOC;
 
-        input.value = numeroOC;
-
-        buscarOC();
+        mostrarDetalleOC(numeroOC);
     }
 
 
+    // Mantiene compatibilidad con el buscador universal del Inicio.
     function buscarOC() {
-        const q =
-            document
-                .getElementById(
-                    "oc-q"
-                )
-                .value
-                .trim()
-                .toLowerCase();
-
-        const contenedor =
-            document.getElementById(
-                "oc-resultado"
-            );
-
+        const q = texto(document.getElementById("oc-q")?.value).trim();
         if (!q) {
-            contenedor.innerHTML = "";
+            listarOrdenes();
             return;
         }
 
-        const oc =
-            ORDENES.find(
-                x =>
-                    texto(
-                        x.numero_oc
-                    )
-                    .toLowerCase()
-                    .includes(q)
-            );
+        const exacta = ORDENES.find(
+            x => texto(x.numero_oc).toLowerCase() === q.toLowerCase()
+        );
+
+        if (exacta) {
+            mostrarDetalleOC(exacta.numero_oc);
+            return;
+        }
+
+        listarOrdenes();
+    }
+
+
+    function mostrarDetalleOC(numeroOC) {
+        const contenedor = document.getElementById("oc-resultado");
+        const oc = ORDENES.find(
+            x => texto(x.numero_oc) === texto(numeroOC)
+        );
 
         if (!oc) {
             contenedor.innerHTML = `
             <div class="static-empty">
                 No se encontró la OC.
-            </div>
-            `;
+            </div>`;
             return;
         }
 
-        const articulos =
-            DETALLE.filter(
-                x =>
-                    texto(
-                        x.numero_oc
-                    ) ===
-                    texto(
-                        oc.numero_oc
-                    )
-            );
+        const articulos = DETALLE.filter(
+            x => texto(x.numero_oc) === texto(oc.numero_oc)
+        );
 
         contenedor.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <button class="btn btn-outline-secondary" onclick="listarOrdenes()">
+                <i class="bi bi-arrow-left me-1"></i>Volver al listado
+            </button>
+            <span class="dashboard-period-label">
+                <i class="bi bi-file-earmark-text"></i>${escapar(oc.numero_oc)}
+            </span>
+        </div>
+
         <div class="row g-4">
-
-            ${kpi(
-                "Orden de Compra",
-                oc.numero_oc,
-                oc.hospital
-            )}
-
-            ${kpi(
-                "Fecha",
-                fechaTexto(
-                    oc.fecha
-                ),
-                "fecha de emisión"
-            )}
-
-            ${kpi(
-                "Moneda",
-                oc.moneda,
-                "moneda de la OC"
-            )}
-
-            ${kpi(
-                "Total",
-                formatoMoneda(
-                    oc.total,
-                    oc.moneda
-                ),
-                "total documento"
-            )}
-
+            ${kpi("Orden de Compra", oc.numero_oc, oc.hospital)}
+            ${kpi("Fecha", fechaTexto(oc.fecha), "fecha de emisión")}
+            ${kpi("Moneda", oc.moneda, "moneda de la OC")}
+            ${kpi("Total", formatoMoneda(oc.total, oc.moneda), "total documento")}
         </div>
 
         <div class="row g-4 mt-1">
-
             <div class="col-xl-6">
                 <div class="card content-card h-100">
                     <div class="card-body">
-
-                        <div class="card-title-area">
-                            <div>
-                                <h3>
-                                    Proveedor
-                                </h3>
-                            </div>
-                        </div>
-
-                        ${detalleDato(
-                            "Proveedor",
-                            oc.proveedor
-                        )}
-
-                        ${detalleDato(
-                            "RUT",
-                            oc.rut_proveedor
-                        )}
-
-                        ${detalleDato(
-                            "Dirección",
-                            oc.direccion_proveedor
-                        )}
-
-                        ${detalleDato(
-                            "Ciudad",
-                            oc.ciudad
-                        )}
-
-                        ${detalleDato(
-                            "Vendedor",
-                            oc.vendedor
-                        )}
-
-                        ${detalleDato(
-                            "Teléfono",
-                            oc.telefono
-                        )}
-
-                        ${detalleDato(
-                            "Email",
-                            oc.email
-                        )}
-
-                        ${detalleDato(
-                            "Forma de pago",
-                            oc.forma_pago
-                        )}
-
+                        <div class="card-title-area"><div><h3>Proveedor</h3></div></div>
+                        ${detalleDato("Proveedor", oc.proveedor)}
+                        ${detalleDato("RUT", oc.rut_proveedor)}
+                        ${detalleDato("Dirección", oc.direccion_proveedor)}
+                        ${detalleDato("Ciudad", oc.ciudad)}
+                        ${detalleDato("Vendedor", oc.vendedor)}
+                        ${detalleDato("Teléfono", oc.telefono)}
+                        ${detalleDato("Email", oc.email)}
+                        ${detalleDato("Forma de pago", oc.forma_pago)}
                     </div>
                 </div>
             </div>
@@ -3629,95 +3716,32 @@ def generar_html(ordenes, detalle):
             <div class="col-xl-6">
                 <div class="card content-card h-100">
                     <div class="card-body">
-
-                        <div class="card-title-area">
-                            <div>
-                                <h3>
-                                    Información Interna
-                                </h3>
-                            </div>
-                        </div>
-
-                        ${detalleDato(
-                            "Solicitante",
-                            oc.solicitante_oc
-                        )}
-
-                        ${detalleDato(
-                            "Primer aprobador",
-                            oc.primer_aprobador
-                        )}
-
-                        ${detalleDato(
-                            "Solicitud",
-                            oc.solicitud
-                        )}
-
-                        ${detalleDato(
-                            "Estado",
-                            oc.estado_proceso
-                        )}
-
-                        ${detalleDato(
-                            "Subtotal",
-                            formatoMoneda(
-                                oc.subtotal,
-                                oc.moneda
-                            )
-                        )}
-
-                        ${detalleDato(
-                            "IVA",
-                            formatoMoneda(
-                                oc.iva,
-                                oc.moneda
-                            )
-                        )}
-
+                        <div class="card-title-area"><div><h3>Información Interna</h3></div></div>
+                        ${detalleDato("Solicitante", oc.solicitante_oc)}
+                        ${detalleDato("Primer aprobador", oc.primer_aprobador)}
+                        ${detalleDato("Solicitud", oc.solicitud)}
+                        ${detalleDato("Estado", oc.estado_proceso)}
+                        ${detalleDato("Subtotal", formatoMoneda(oc.subtotal, oc.moneda))}
+                        ${detalleDato("IVA", formatoMoneda(oc.iva, oc.moneda))}
                     </div>
                 </div>
             </div>
-
         </div>
 
-        ${
-            texto(
-                oc.nota_interna
-            ).trim()
-                ? `
-                <div class="card content-card mt-4">
-                    <div class="card-body">
-                        <div class="card-title-area">
-                            <div>
-                                <h3>
-                                    Nota Interna
-                                </h3>
-                            </div>
-                        </div>
-
-                        <p>
-                            ${escapar(
-                                oc.nota_interna
-                            )}
-                        </p>
-                    </div>
-                </div>
-                `
-                : ""
-        }
+        ${texto(oc.nota_interna).trim() ? `
+        <div class="card content-card mt-4">
+            <div class="card-body">
+                <div class="card-title-area"><div><h3>Nota Interna</h3></div></div>
+                <p>${escapar(oc.nota_interna)}</p>
+            </div>
+        </div>` : ""}
 
         <div class="card content-card mt-4">
             <div class="card-body">
-
                 <div class="card-title-area">
                     <div>
-                        <h3>
-                            Detalle de artículos
-                        </h3>
-                        <p>
-                            ${articulos.length}
-                            líneas.
-                        </p>
+                        <h3>Detalle de artículos</h3>
+                        <p>${articulos.length} líneas.</p>
                     </div>
                 </div>
 
@@ -3730,73 +3754,26 @@ def generar_html(ordenes, detalle):
                                 <th>Descripción</th>
                                 <th>Unidad</th>
                                 <th>Cantidad</th>
-                                <th class="text-end">
-                                    Precio Unit.
-                                </th>
-                                <th class="text-end">
-                                    Total Línea
-                                </th>
+                                <th class="text-end">Precio Unit.</th>
+                                <th class="text-end">Total Línea</th>
                             </tr>
                         </thead>
-
                         <tbody>
                             ${articulos.map(x => `
                             <tr>
-                                <td>
-                                    ${escapar(
-                                        x.numero_item
-                                    )}
-                                </td>
-
-                                <td>
-                                    ${escapar(
-                                        x.codigo
-                                    )}
-                                </td>
-
-                                <td>
-                                    ${escapar(
-                                        x.descripcion
-                                    )}
-                                </td>
-
-                                <td>
-                                    ${escapar(
-                                        x.unidad_medida
-                                    )}
-                                </td>
-
-                                <td>
-                                    ${formatoNumero(
-                                        x.cantidad,
-                                        2
-                                    )}
-                                </td>
-
-                                <td class="text-end">
-                                    ${formatoMoneda(
-                                        x.precio_unitario,
-                                        x.moneda
-                                    )}
-                                </td>
-
-                                <td class="text-end">
-                                    <strong>
-                                        ${formatoMoneda(
-                                            x.total_linea,
-                                            x.moneda
-                                        )}
-                                    </strong>
-                                </td>
-                            </tr>
-                            `).join("")}
+                                <td>${escapar(x.numero_item)}</td>
+                                <td>${escapar(x.codigo)}</td>
+                                <td>${escapar(x.descripcion)}</td>
+                                <td>${escapar(x.unidad_medida)}</td>
+                                <td>${formatoNumero(x.cantidad, 2)}</td>
+                                <td class="text-end">${formatoMoneda(x.precio_unitario, x.moneda)}</td>
+                                <td class="text-end"><strong>${formatoMoneda(x.total_linea, x.moneda)}</strong></td>
+                            </tr>`).join("")}
                         </tbody>
                     </table>
                 </div>
-
             </div>
-        </div>
-        `;
+        </div>`;
     }
 
 
