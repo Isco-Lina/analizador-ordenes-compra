@@ -764,6 +764,9 @@ def generar_html(ordenes, detalle):
         const totalOC = unicos(ORDENES.map(x => x.numero_oc)).length;
         const totalProveedores = unicos(ORDENES.map(x => x.proveedor)).length;
         const totalProductos = unicos(DETALLE_COMPLETO.map(x => texto(x.descripcion).trim()).filter(Boolean)).length;
+        const totalComprasRegistradas = DETALLE_COMPLETO.filter(
+            x => texto(x.descripcion).trim()
+        ).length;
 
         const acciones = [
             { vista: "productos", icono: "bi-search", titulo: "Buscar Producto", texto: "Consulta un producto y revisa sus precios, proveedores y órdenes de compra anteriores.", accion: "Buscar producto" },
@@ -805,8 +808,8 @@ def generar_html(ordenes, detalle):
             <div class="row g-4 mb-4">
                 ${kpi("Órdenes de Compra", totalOC, "OC registradas")}
                 ${kpi("Proveedores", totalProveedores, "proveedores registrados")}
-                ${kpi("Productos", totalProductos, "descripciones registradas")}
-                ${kpi("Proveedor único", unicosProveedor.length, "productos con un solo proveedor histórico")}
+                ${kpi("Productos / Conceptos", totalProductos, "descripciones únicas registradas")}
+                ${kpi("Compras registradas", totalComprasRegistradas, "registros de productos y servicios procesados")}
             </div>
 
             <div class="home-section">

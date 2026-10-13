@@ -1,32 +1,138 @@
 # ComprasAnalytics
 
-Aplicación local en Python + Flask para extraer, consolidar y analizar órdenes de compra de iConstruye.
+ComprasAnalytics es una aplicación local desarrollada en Python para extraer, consolidar y analizar órdenes de compra de iConstruye.
 
-## Módulos
+El proyecto tiene dos componentes principales:
 
-- **Centro de Control:** OC, proveedores, movimientos, productos con proveedor único, referencias históricas y últimas OC.
-- **Dashboard General:** indicadores, evolución, hospitales y ranking ampliable de proveedores por monto.
-- **Buscar Producto:** búsqueda rápida con último precio, mínimo histórico, último proveedor y acceso al análisis detallado.
-- **Proveedores:** Top 25 visible al entrar, catálogo completo, búsqueda y ficha histórica detallada.
-- **Análisis de Precios:** filtros, estadísticas por moneda, evolución y mínimo/máximo histórico por producto.
-- **Historial y Control:** productos con proveedor único, último precio, mínimo, máximo, variación contra el antecedente anterior y filtros de búsqueda.
-- **Órdenes de Compra:** búsqueda y consulta del detalle de una OC.
+1. **Analizador PDF**, que procesa las órdenes de compra y genera un Excel consolidado.
+2. **Dashboard de análisis**, que utiliza ese Excel para consultar órdenes, proveedores, productos, precios históricos y comportamiento de las compras.
+
+El dashboard puede utilizarse de dos formas:
+
+- **Dashboard Flask**, ejecutado localmente con Python.
+- **Dashboard HTML autónomo**, generado como archivo independiente para abrirlo directamente en el navegador sin iniciar Flask.
+
+---
+
+## Funcionalidades principales
+
+### Inicio / Centro de Control
+
+Vista inicial de consulta rápida.
+
+Muestra:
+
+- total de órdenes de compra;
+- total de proveedores;
+- productos y conceptos únicos;
+- compras registradas;
+- buscador general por producto, proveedor o número de OC;
+- accesos rápidos a los principales módulos;
+- actividad reciente.
+
+### Dashboard de Compras
+
+Vista ejecutiva para analizar las compras según:
+
+- hospital;
+- moneda;
+- año;
+- mes;
+- ranking de proveedores.
+
+Incluye:
+
+- total comprado;
+- cantidad de órdenes de compra;
+- proveedores activos;
+- ticket promedio por OC;
+- comparación con el período anterior;
+- evolución mensual o diaria;
+- ranking de proveedores por monto;
+- distribución por hospital;
+- principales compras del período;
+- Top 10 o Top 25 de productos y conceptos por monto acumulado.
+
+### Buscar Producto
+
+Permite buscar productos o conceptos y revisar:
+
+- descripción;
+- unidad de medida;
+- moneda;
+- último proveedor;
+- último precio;
+- mínimo histórico;
+- máximo histórico;
+- órdenes de compra asociadas;
+- evolución histórica.
+
+### Proveedores
+
+Permite consultar la actividad histórica de los proveedores.
+
+Incluye:
+
+- búsqueda por nombre, RUT o producto;
+- Top 10;
+- Top 25;
+- catálogo completo;
+- cantidad de OC;
+- productos asociados;
+- última compra;
+- ficha histórica detallada.
+
+### Análisis de Precios
+
+Permite consultar movimientos históricos usando filtros por:
+
+- producto;
+- proveedor;
+- moneda;
+- hospital.
+
+Además permite:
+
+- buscar dentro de los resultados;
+- mostrar Top 10, Top 25 o todos;
+- ordenar por fecha;
+- ordenar por precio mayor o menor;
+- revisar fecha, OC, producto, unidad, proveedor, hospital, cantidad, moneda, precio, mínimo y máximo.
+
+### Historial y Control
+
+Permite revisar antecedentes históricos de productos y proveedores.
+
+Incluye:
+
+- productos asociados a proveedor único;
+- último precio;
+- mínimo histórico;
+- máximo histórico;
+- variación respecto del antecedente inmediatamente anterior;
+- filtros de búsqueda.
+
+La variación porcentual es informativa y no representa automáticamente una alerta de ahorro o sobreprecio.
+
+### Órdenes de Compra
+
+Permite buscar una OC y consultar su información completa, incluyendo cabecera, proveedor, condiciones comerciales, totales y detalle de artículos o servicios.
+
+---
 
 ## Enfoque de análisis
 
-La aplicación muestra referencias históricas objetivas.
+ComprasAnalytics muestra referencias históricas objetivas obtenidas desde las órdenes de compra procesadas.
 
-No intenta convertir diferencias de precio en alertas automáticas de ahorro, porque una misma descripción puede corresponder a compras con cantidades, presentaciones o alcances distintos.
+El sistema no interpreta automáticamente una diferencia de precio como ahorro, sobreprecio o alerta, porque una misma descripción puede corresponder a compras con distintas cantidades, unidades, presentaciones, condiciones comerciales, alcances o fechas.
 
-Los campos de precio se comparan dentro de la misma descripción, unidad de medida y moneda.
+Los precios se comparan dentro de la misma descripción, unidad de medida y moneda.
 
-La variación porcentual del módulo **Historial y Control** es informativa y compara el último precio con el antecedente inmediatamente anterior.
-
-## Regla monetaria
+### Regla monetaria
 
 Las monedas se analizan de forma independiente.
 
-**CLP, USD, EUR y UF nunca se suman ni promedian entre sí.**
+**CLP, USD, EUR y UF nunca se suman ni se promedian entre sí.**
 
 ---
 
@@ -34,7 +140,7 @@ Las monedas se analizan de forma independiente.
 
 Se recomienda utilizar Python 3.14.
 
-Para comprobar la versión instalada:
+Comprobar la versión instalada:
 
 ```powershell
 python --version
@@ -50,7 +156,7 @@ python --version
 git clone https://github.com/Isco-Lina/analizador-ordenes-compra.git
 ```
 
-Ingresar a la carpeta del proyecto:
+Entrar a la carpeta:
 
 ```powershell
 cd analizador-ordenes-compra
@@ -62,21 +168,21 @@ cd analizador-ordenes-compra
 python -m venv .venv
 ```
 
-### 3. Activar el entorno virtual
+### 3. Activar entorno virtual
 
-Si PowerShell bloquea la ejecución de scripts, ejecutar primero:
+Si PowerShell bloquea la ejecución de scripts:
 
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
-Luego activar el entorno virtual:
+Luego activar:
 
 ```powershell
 .venv\Scripts\Activate.ps1
 ```
 
-Si se activó correctamente, la terminal debería mostrar algo similar a:
+La consola debería mostrar algo similar a:
 
 ```text
 (.venv) PS C:\...\analizador-ordenes-compra>
@@ -92,9 +198,9 @@ pip install -r requirements.txt
 
 ## Crear estructura de datos
 
-Las carpetas de datos no se almacenan en GitHub, ya que contienen archivos PDF locales y archivos generados durante el procesamiento.
+Los PDF y archivos generados no se almacenan en GitHub.
 
-Antes de utilizar el analizador se debe crear la siguiente estructura:
+Crear:
 
 ```text
 data/
@@ -102,7 +208,7 @@ data/
 └── output/
 ```
 
-Desde PowerShell se puede crear ejecutando:
+Desde PowerShell:
 
 ```powershell
 mkdir data
@@ -110,23 +216,21 @@ mkdir data\pdf
 mkdir data\output
 ```
 
-La carpeta:
+Uso:
 
 ```text
 data/pdf/
 ```
 
-se utiliza para guardar las órdenes de compra en formato PDF que se quieran procesar.
-
-La carpeta:
+Contiene las órdenes de compra PDF a procesar.
 
 ```text
 data/output/
 ```
 
-se utiliza para guardar el archivo Excel generado por el analizador.
+Contiene los archivos generados por el proyecto.
 
-La estructura del proyecto debería quedar aproximadamente así:
+La estructura debería quedar aproximadamente así:
 
 ```text
 analizador-ordenes-compra/
@@ -139,17 +243,18 @@ analizador-ordenes-compra/
 │   └── output/
 ├── src/
 ├── tests/
-├── .gitignore
+├── generar_dashboard_html.py
 ├── app.py
 ├── README.md
-└── requirements.txt
+├── requirements.txt
+└── .gitignore
 ```
 
 ---
 
 ## Procesar órdenes de compra PDF
 
-Primero se deben copiar las órdenes de compra dentro de:
+Copiar los PDF a:
 
 ```text
 data/pdf/
@@ -161,27 +266,27 @@ Luego ejecutar:
 python app.py
 ```
 
-El analizador procesará los archivos PDF encontrados y generará el archivo:
+El sistema generará:
 
 ```text
 data/output/ordenes_compra.xlsx
 ```
 
-El Excel contiene principalmente las hojas:
+El Excel contiene principalmente:
 
 ```text
 ORDENES
 DETALLE_OC
 ```
 
-- **ORDENES:** contiene una fila por orden de compra.
-- **DETALLE_OC:** contiene el detalle de los productos o servicios incluidos en cada orden.
+- **ORDENES:** una fila por orden de compra.
+- **DETALLE_OC:** detalle de productos o servicios de cada OC.
 
 ---
 
-## Ejecutar dashboard
+## Ejecutar Dashboard Flask
 
-Una vez generado el archivo:
+Una vez generado:
 
 ```text
 data/output/ordenes_compra.xlsx
@@ -193,27 +298,118 @@ ejecutar:
 python dashboard\dashboard.py
 ```
 
-Luego abrir en el navegador:
+Abrir en el navegador:
 
 ```text
 http://127.0.0.1:5000
 ```
 
+Mientras se use esta modalidad, la consola debe permanecer abierta.
+
+Para detener Flask:
+
+```text
+Ctrl + C
+```
+
 ---
 
-## Generar dashboard HTML autónomo
+# Generar y abrir el Dashboard HTML
 
-Además del dashboard Flask, el proyecto puede generar una versión HTML independiente utilizando directamente el archivo:
+Esta es la modalidad más simple para consultar el dashboard sin iniciar Flask cada vez.
+
+El generador utiliza:
 
 ```text
 data/output/ordenes_compra.xlsx
 ```
 
+y crea:
+
+```text
+data/output/dashboard.html
+```
+
+## 1. Generar el HTML
+
+Desde la carpeta principal del proyecto ejecutar:
+
+```powershell
+python generar_dashboard_html.py
+```
+
+Al terminar aparecerá un mensaje similar a:
+
+```text
+Excel leído:      ...\data\output\ordenes_compra.xlsx
+Órdenes:          ...
+Artículos:        ...
+Dashboard:        ...\data\output\dashboard.html
+
+HTML generado correctamente.
+```
+
+## 2. Abrir el Dashboard HTML
+
+Ir a:
+
+```text
+data/output/
+```
+
+y abrir:
+
+```text
+dashboard.html
+```
+
+Se puede abrir de cualquiera de estas formas:
+
+- doble clic sobre `dashboard.html`;
+- clic derecho → **Abrir con** → Chrome o Edge;
+- arrastrar el archivo al navegador.
+
+También se puede abrir directamente desde PowerShell:
+
+```powershell
+start data\output\dashboard.html
+```
+
+## 3. Actualizar el HTML cuando existan nuevas OC
+
+El HTML contiene los datos disponibles **al momento en que fue generado**.
+
+Si se agregan nuevos PDF y se vuelve a ejecutar:
+
+```powershell
+python app.py
+```
+
+también se debe volver a ejecutar:
+
+```powershell
+python generar_dashboard_html.py
+```
+
+para actualizar:
+
+```text
+data/output/dashboard.html
+```
+
+Después solo hay que volver a abrir el archivo o actualizar la pestaña del navegador.
+
+### Importante
+
+El Dashboard HTML **no necesita Flask ejecutándose**.
+
+Sin embargo, utiliza Bootstrap, Bootstrap Icons y Chart.js desde CDN, por lo que se recomienda conexión a Internet para cargar correctamente estilos, iconos y gráficos.
+
 ---
 
-## Flujo completo de uso
+## Flujo completo recomendado
 
-Después de clonar el repositorio, el flujo recomendado es:
+### Primera instalación
 
 ```powershell
 git clone https://github.com/Isco-Lina/analizador-ordenes-compra.git
@@ -233,56 +429,92 @@ mkdir data\pdf
 mkdir data\output
 ```
 
-Luego copiar las órdenes de compra PDF dentro de:
+Luego:
 
-```text
-data/pdf/
-```
+1. copiar los PDF a `data/pdf/`;
+2. ejecutar `python app.py`;
+3. elegir Dashboard Flask o Dashboard HTML.
 
-Procesar los archivos:
-
-```powershell
-python app.py
-```
-
-Una vez generado el Excel, iniciar el dashboard:
+### Opción A: Flask
 
 ```powershell
 python dashboard\dashboard.py
 ```
 
-Finalmente abrir:
+Abrir:
 
 ```text
 http://127.0.0.1:5000
+```
+
+### Opción B: HTML
+
+```powershell
+python generar_dashboard_html.py
+```
+
+Abrir:
+
+```powershell
+start data\output\dashboard.html
+```
+
+---
+
+## Flujo habitual después de agregar nuevas OC
+
+```text
+PDF
+ ↓
+python app.py
+ ↓
+ordenes_compra.xlsx
+ ↓
+python generar_dashboard_html.py
+ ↓
+dashboard.html
+```
+
+En comandos:
+
+```powershell
+python app.py
+python generar_dashboard_html.py
+start data\output\dashboard.html
 ```
 
 ---
 
 ## Datos utilizados por el dashboard
 
-El dashboard utiliza como fuente principal:
+Fuente principal:
 
 ```text
 data/output/ordenes_compra.xlsx
 ```
 
-y trabaja principalmente con las hojas:
+Hojas utilizadas:
 
 ```text
 ORDENES
 DETALLE_OC
 ```
 
-El sistema mantiene una caché en memoria para mejorar el rendimiento.
+El Dashboard Flask trabaja sobre el Excel generado y puede recargar información cuando cambia el archivo.
 
-Cuando cambia la fecha de modificación del archivo Excel, el dashboard detecta automáticamente el cambio y vuelve a cargar la información.
+El Dashboard HTML incorpora los datos existentes al momento de ejecutar:
+
+```powershell
+python generar_dashboard_html.py
+```
+
+Por eso debe regenerarse después de actualizar el Excel.
 
 ---
 
 ## Analizador PDF
 
-El código encargado de leer, interpretar y procesar las órdenes de compra se encuentra en:
+El código encargado de leer e interpretar las órdenes de compra se encuentra principalmente en:
 
 ```text
 src/
@@ -290,28 +522,28 @@ src/
 
 El dashboard funciona como una capa de consulta y análisis sobre la información consolidada en Excel.
 
-Las mejoras visuales y los módulos de análisis del dashboard no modifican el proceso original de extracción de los PDF.
+Las mejoras visuales y analíticas del dashboard no modifican el proceso original de extracción de PDF.
 
 ---
 
 ## Archivos locales no incluidos en GitHub
 
-Por seguridad y para evitar almacenar archivos pesados o información de trabajo, el repositorio no incluye:
+Por seguridad y para evitar subir archivos pesados o información de trabajo, normalmente no se incluyen:
 
-- entorno virtual `.venv/`
-- órdenes de compra PDF
-- archivo `ordenes_compra.xlsx`
-- archivos generados dentro de `data/output/`
-- archivos temporales de Python
+- `.venv/`;
+- órdenes de compra PDF;
+- `ordenes_compra.xlsx`;
+- `dashboard.html`;
+- archivos generados en `data/output/`;
+- archivos temporales de Python;
+- caché de Python.
 
-Por este motivo, después de clonar el proyecto cada usuario debe crear localmente:
+Después de clonar el proyecto se deben crear:
 
 ```text
 data/pdf/
 data/output/
 ```
-
-Luego debe colocar sus órdenes de compra dentro de `data/pdf/`, ejecutar `python app.py` para generar el Excel y finalmente ejecutar el dashboard.
 
 ---
 
@@ -323,5 +555,42 @@ Luego debe colocar sus órdenes de compra dentro de `data/pdf/`, ejecutar `pytho
 - OpenPyXL
 - PyMuPDF
 - PDFPlumber
+- JavaScript
+- HTML
+- CSS
 - Bootstrap
+- Bootstrap Icons
 - Chart.js
+
+---
+
+## Resumen rápido
+
+### Procesar órdenes de compra
+
+```powershell
+python app.py
+```
+
+### Ejecutar Dashboard Flask
+
+```powershell
+python dashboard\dashboard.py
+```
+
+### Generar Dashboard HTML
+
+```powershell
+python generar_dashboard_html.py
+```
+
+### Abrir Dashboard HTML
+
+```powershell
+start data\output\dashboard.html
+```
+
+---
+
+**ComprasAnalytics**  
+Herramienta local de apoyo para consulta, trazabilidad y análisis histórico de órdenes de compra.
