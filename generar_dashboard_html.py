@@ -265,6 +265,89 @@ def generar_html(ordenes, detalle):
             width: 100% !important;
         }
     }
+
+/* ==========================================================
+   MEJORA 2026 - INICIO + DASHBOARD
+   ========================================================== */
+.home-hero {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 24px;
+    padding: 30px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, #ffffff 0%, #f7f8ff 100%);
+    box-shadow: var(--shadow-sm);
+}
+.home-hero::after {
+    position: absolute;
+    top: -110px;
+    right: -90px;
+    width: 330px;
+    height: 330px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(79,70,229,.14) 0%, rgba(79,70,229,0) 70%);
+    content: "";
+    pointer-events: none;
+}
+.home-hero > * { position: relative; z-index: 1; }
+.home-hero h1 { margin: 0; max-width: 800px; font-size: 31px; font-weight: 780; letter-spacing: -.8px; }
+.home-hero p { max-width: 780px; margin: 10px 0 0; color: var(--secondary); font-size: 13px; line-height: 1.65; }
+.home-search { margin-top: 22px; max-width: 900px; }
+.home-search .input-group { box-shadow: 0 8px 24px rgba(15,23,42,.06); border-radius: 11px; }
+.home-search .form-control { min-height: 48px; font-size: 13px; }
+.home-search .btn { min-width: 118px; }
+.home-search-hint { margin-top: 9px; color: var(--muted); font-size: 10px; }
+.quick-actions-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+.quick-action-card { display: flex; min-height: 155px; flex-direction: column; padding: 19px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-sm); cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+.quick-action-card:hover { transform: translateY(-3px); border-color: #c7d2fe; box-shadow: var(--shadow-md); }
+.quick-action-top { display: flex; align-items: center; gap: 11px; }
+.quick-action-icon { display: flex; width: 38px; height: 38px; flex: 0 0 38px; align-items: center; justify-content: center; border-radius: 9px; background: var(--primary-soft); color: var(--primary); font-size: 16px; }
+.quick-action-card h3 { margin: 0; color: var(--text); font-size: 13px; font-weight: 720; }
+.quick-action-card p { flex: 1; margin: 11px 0 15px; color: var(--secondary); font-size: 10px; line-height: 1.55; }
+.quick-action-link { color: var(--primary); font-size: 10px; font-weight: 700; }
+.home-recent-footer { display: flex; justify-content: flex-end; margin-top: 14px; }
+.metric-trend { display: inline-flex; align-items: center; gap: 5px; margin-top: 7px; font-size: 10px; font-weight: 700; }
+.metric-trend.positive { color: #047857; }
+.metric-trend.negative { color: #b91c1c; }
+.metric-trend.neutral { color: var(--muted); }
+.dashboard-period-label { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; border: 1px solid #e0e7ff; border-radius: 999px; background: #f8f9ff; color: var(--primary); font-size: 10px; font-weight: 700; }
+.insight-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; margin-top: 18px; }
+.insight-item { padding: 13px; border: 1px solid #edf0f3; border-radius: 9px; background: #fafbfc; }
+.insight-item span { display: block; margin-bottom: 5px; color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .03em; }
+.insight-item strong { display: block; color: var(--text); font-size: 13px; font-weight: 740; }
+.concentration-list { display: grid; gap: 11px; margin-top: 20px; }
+.concentration-row { display: grid; grid-template-columns: 110px 1fr 58px; gap: 10px; align-items: center; }
+.concentration-row span { color: var(--secondary); font-size: 10px; }
+.concentration-track { height: 8px; overflow: hidden; border-radius: 999px; background: #eef2f7; }
+.concentration-fill { height: 100%; border-radius: inherit; background: var(--primary); }
+.concentration-row strong { color: var(--text); font-size: 11px; text-align: right; }
+.summary-list { display: grid; gap: 10px; margin-top: 18px; }
+.summary-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding-bottom: 10px; border-bottom: 1px solid #f0f2f5; }
+.summary-row:last-child { padding-bottom: 0; border-bottom: 0; }
+.summary-row span { color: var(--secondary); font-size: 10px; }
+.summary-row strong { max-width: 65%; color: var(--text); font-size: 11px; font-weight: 700; text-align: right; }
+.top-products-list { margin-top: 16px; }
+.top-product-row { display: grid; grid-template-columns: minmax(0,1fr) 64px 74px; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f2f5; }
+.top-product-row:last-child { border-bottom: 0; }
+.top-product-row strong { overflow: hidden; color: var(--text); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.top-product-row span { color: var(--secondary); font-size: 9px; text-align: right; }
+.dashboard-empty { padding: 35px; border: 1px dashed #d7dce4; border-radius: 12px; background: #fff; color: var(--secondary); text-align: center; }
+
+@media (max-width: 1100px) {
+    .quick-actions-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .insight-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+    .home-hero { padding: 22px 18px; }
+    .home-hero h1 { font-size: 25px; }
+    .home-search .input-group { display: flex; flex-direction: column; gap: 8px; box-shadow: none; }
+    .home-search .input-group > * { width: 100%; border-radius: 8px !important; border: 1px solid #dfe3e9 !important; }
+    .quick-actions-grid { grid-template-columns: 1fr; }
+    .concentration-row { grid-template-columns: 95px 1fr 52px; }
+    .top-product-row { grid-template-columns: minmax(0,1fr) 54px 64px; }
+}
+
     """
 
     javascript = r"""
@@ -272,6 +355,9 @@ def generar_html(ordenes, detalle):
     const DETALLE = __DETALLE__;
 
     let charts = [];
+    let DASH_TOP_COMPRAS = 10;
+    let PRECIO_RESULTADOS_ACTUALES = [];
+    let PRECIO_STATS_ACTUALES = null;
 
     const MAPA_OC = new Map(
         ORDENES.map(o => [String(o.numero_oc || ""), o])
@@ -667,187 +753,154 @@ def generar_html(ordenes, detalle):
     // ========================================================
 
     function renderInicio() {
-        const vista =
-            document.getElementById(
-                "view-inicio"
-            );
+        const vista = document.getElementById("view-inicio");
 
-        const resumen =
-            resumenProductos(
-                DETALLE_COMPLETO
-            );
+        const resumen = resumenProductos(DETALLE_COMPLETO);
+        const unicosProveedor = resumen.filter(x => x.cantidadProveedores === 1);
+        const ultimas = [...ORDENES]
+            .sort((a, b) => fechaValor(b.fecha) - fechaValor(a.fecha))
+            .slice(0, 5);
 
-        const unicosProveedor =
-            resumen.filter(
-                x =>
-                    x.cantidadProveedores === 1
-            );
+        const totalOC = unicos(ORDENES.map(x => x.numero_oc)).length;
+        const totalProveedores = unicos(ORDENES.map(x => x.proveedor)).length;
+        const totalProductos = unicos(DETALLE_COMPLETO.map(x => texto(x.descripcion).trim()).filter(Boolean)).length;
 
-        const refs =
-            [...unicosProveedor]
-                .sort(
-                    (a, b) =>
-                        b.ordenes -
-                            a.ordenes ||
-                        fechaValor(
-                            b.ultimaFecha
-                        ) -
-                        fechaValor(
-                            a.ultimaFecha
-                        )
-                )
-                .slice(0, 10);
-
-        const ultimas =
-            [...ORDENES]
-                .sort(
-                    (a, b) =>
-                        fechaValor(b.fecha) -
-                        fechaValor(a.fecha)
-                )
-                .slice(0, 10);
+        const acciones = [
+            { vista: "productos", icono: "bi-search", titulo: "Buscar Producto", texto: "Consulta un producto y revisa sus precios, proveedores y órdenes de compra anteriores.", accion: "Buscar producto" },
+            { vista: "proveedores", icono: "bi-buildings", titulo: "Proveedores", texto: "Revisa el historial de compras, productos y actividad de cada proveedor.", accion: "Ver proveedores" },
+            { vista: "precios", icono: "bi-graph-up-arrow", titulo: "Análisis de Precios", texto: "Compara precios históricos y revisa cómo han evolucionado en el tiempo.", accion: "Analizar precios" },
+            { vista: "historial", icono: "bi-clock-history", titulo: "Historial y Control", texto: "Consulta antecedentes históricos y productos asociados a uno o más proveedores.", accion: "Revisar historial" },
+            { vista: "ordenes", icono: "bi-file-earmark-text", titulo: "Órdenes de Compra", texto: "Encuentra una orden de compra y revisa su información completa.", accion: "Buscar OC" },
+            { vista: "dashboard", icono: "bi-grid", titulo: "Dashboard", texto: "Revisa el comportamiento de las compras por período, hospital y proveedor.", accion: "Abrir dashboard" }
+        ];
 
         vista.innerHTML = `
         <div class="container-fluid px-0">
-
             <div class="page-title">
                 <div>
-                    <span class="page-badge">
-                        CENTRO DE CONTROL
-                    </span>
+                    <span class="page-badge">CENTRO DE CONTROL</span>
                     <h2>Panorama de Compras</h2>
-                    <p>
-                        Resumen objetivo del historial de compras.
-                    </p>
+                    <p>Una visión clara del historial de compras para consultar, comparar y tomar decisiones.</p>
                 </div>
+                <div class="data-status"><span></span>Datos disponibles</div>
+            </div>
 
-                <div class="data-status">
-                    <span></span>
-                    Datos incrustados en HTML
+            <div class="home-hero">
+                <span class="section-eyebrow">COMPRASANALYTICS</span>
+                <h1>Toda la información de compras, en un solo lugar.</h1>
+                <p>
+                    Consulta órdenes de compra, proveedores y productos desde una misma vista.
+                    Usa el historial disponible para revisar antecedentes y apoyar nuevas decisiones de compra.
+                </p>
+                <div class="home-search">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input id="inicio-q" class="form-control" placeholder="Buscar producto, proveedor o N° de OC...">
+                        <button id="inicio-buscar" class="btn btn-primary">Buscar</button>
+                    </div>
+                    <div class="home-search-hint">Ejemplos: MEGADREN · BUDNIK · RM-HCN-2483</div>
                 </div>
             </div>
 
             <div class="row g-4 mb-4">
-
-                ${kpi(
-                    "Órdenes de Compra",
-                    unicos(
-                        ORDENES.map(
-                            x => x.numero_oc
-                        )
-                    ).length,
-                    "OC registradas"
-                )}
-
-                ${kpi(
-                    "Proveedores",
-                    unicos(
-                        ORDENES.map(
-                            x => x.proveedor
-                        )
-                    ).length,
-                    "proveedores registrados"
-                )}
-
-                ${kpi(
-                    "Movimientos",
-                    DETALLE.length,
-                    "líneas de artículos"
-                )}
-
-                ${kpi(
-                    "Proveedor único",
-                    unicosProveedor.length,
-                    "productos comprados a un solo proveedor"
-                )}
-
+                ${kpi("Órdenes de Compra", totalOC, "OC registradas")}
+                ${kpi("Proveedores", totalProveedores, "proveedores registrados")}
+                ${kpi("Productos", totalProductos, "descripciones registradas")}
+                ${kpi("Proveedor único", unicosProveedor.length, "productos con un solo proveedor histórico")}
             </div>
 
-            <div class="row g-4">
-
-                <div class="col-xl-8">
-                    <div class="card content-card h-100">
-                        <div class="card-body">
-
-                            <div class="card-title-area">
-                                <div>
-                                    <h3>
-                                        Referencias históricas destacadas
-                                    </h3>
-                                    <p>
-                                        Productos con un solo proveedor histórico.
-                                    </p>
-                                </div>
+            <div class="home-section">
+                <div class="home-section-header">
+                    <span class="section-eyebrow">NAVEGACIÓN RÁPIDA</span>
+                    <h2>¿Qué necesitas hacer?</h2>
+                    <p>Accede directamente a la información que necesitas revisar.</p>
+                </div>
+                <div class="quick-actions-grid">
+                    ${acciones.map(a => `
+                        <div class="quick-action-card" onclick="irA('${a.vista}')">
+                            <div class="quick-action-top">
+                                <div class="quick-action-icon"><i class="bi ${a.icono}"></i></div>
+                                <h3>${escapar(a.titulo)}</h3>
                             </div>
+                            <p>${escapar(a.texto)}</p>
+                            <span class="quick-action-link">${escapar(a.accion)} →</span>
+                        </div>
+                    `).join("")}
+                </div>
+            </div>
 
-                            ${tablaReferencias(refs)}
-
+            <div class="card content-card mt-4">
+                <div class="card-body">
+                    <div class="card-title-area">
+                        <div>
+                            <h3>Actividad reciente</h3>
+                            <p>Últimas órdenes incorporadas al historial de compras.</p>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-xl-4">
-                    <div class="card content-card h-100">
-                        <div class="card-body">
-
-                            <div class="card-title-area">
-                                <div>
-                                    <h3>
-                                        Últimas órdenes
-                                    </h3>
-                                    <p>
-                                        Actividad más reciente.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="recent-list">
+                    <div class="table-responsive">
+                        <table class="table purchase-table">
+                            <thead>
+                                <tr><th>OC</th><th>Fecha</th><th>Hospital</th><th>Proveedor</th><th class="text-end">Total</th></tr>
+                            </thead>
+                            <tbody>
                                 ${ultimas.map(o => `
-                                    <div
-                                        class="recent-item static-click"
-                                        onclick="abrirOC('${escapar(
-                                            o.numero_oc
-                                        )}')"
-                                    >
-                                        <div>
-                                            <strong>
-                                                ${escapar(
-                                                    o.numero_oc
-                                                )}
-                                            </strong>
-                                            <span>
-                                                ${escapar(
-                                                    o.proveedor
-                                                )}
-                                            </span>
-                                        </div>
-
-                                        <div class="text-end">
-                                            <strong>
-                                                ${formatoMoneda(
-                                                    o.total,
-                                                    o.moneda
-                                                )}
-                                            </strong>
-                                            <span>
-                                                ${fechaTexto(
-                                                    o.fecha
-                                                )}
-                                            </span>
-                                        </div>
-                                    </div>
+                                    <tr class="static-click" onclick="abrirOC('${escapar(o.numero_oc)}')">
+                                        <td><strong>${escapar(o.numero_oc)}</strong></td>
+                                        <td>${fechaTexto(o.fecha)}</td>
+                                        <td>${escapar(o.hospital)}</td>
+                                        <td>${escapar(o.proveedor)}</td>
+                                        <td class="text-end"><strong>${formatoMoneda(o.total, o.moneda)}</strong></td>
+                                    </tr>
                                 `).join("")}
-                            </div>
-
-                        </div>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="home-recent-footer">
+                        <button class="btn btn-outline-primary" onclick="irA('ordenes')">Ver todas las órdenes</button>
                     </div>
                 </div>
-
             </div>
+        </div>`;
 
-        </div>
-        `;
+        document.getElementById("inicio-buscar").addEventListener("click", buscarUniversalInicio);
+        document.getElementById("inicio-q").addEventListener("keydown", e => {
+            if (e.key === "Enter") buscarUniversalInicio();
+        });
     }
+
+
+    function buscarUniversalInicio() {
+        const input = document.getElementById("inicio-q");
+        const q = input ? input.value.trim() : "";
+        if (!q) return;
+
+        const qLower = q.toLowerCase();
+        const ocExacta = ORDENES.find(x => texto(x.numero_oc).toLowerCase() === qLower);
+        const pareceOC = /^(rm|oc)[-\s]/i.test(q) || qLower.includes("hcn-") || qLower.includes("hpr-") || qLower.includes("hcq-");
+
+        if (ocExacta || pareceOC) {
+            irA("ordenes");
+            const campo = document.getElementById("oc-q");
+            if (campo) campo.value = q;
+            buscarOC();
+            return;
+        }
+
+        const proveedor = ORDENES.find(x => texto(x.proveedor).toLowerCase().includes(qLower));
+        if (proveedor) {
+            irA("proveedores");
+            const campo = document.getElementById("proveedor-q");
+            if (campo) campo.value = q;
+            buscarProveedores();
+            return;
+        }
+
+        irA("productos");
+        const campo = document.getElementById("producto-q");
+        if (campo) campo.value = q;
+        buscarProductos();
+    }
+
 
 
     function kpi(titulo, valor, textoInferior) {
@@ -975,422 +1028,323 @@ def generar_html(ordenes, detalle):
     // ========================================================
 
     function renderDashboard() {
-        const vista =
-            document.getElementById(
-                "view-dashboard"
-            );
-
-        const hospitales =
-            unicos(
-                ORDENES.map(
-                    x => x.hospital
-                )
-            );
-
-        const monedas =
-            unicos(
-                ORDENES.map(
-                    x => x.moneda
-                )
-            );
-
-        const anios =
-            unicos(
-                ORDENES
-                    .map(x =>
-                        texto(
-                            x.fecha
-                        ).substring(0, 4)
-                    )
-                    .filter(Boolean)
-            ).sort().reverse();
-
-        const monedaDefault =
-            monedas.includes("CLP")
-                ? "CLP"
-                : (
-                    monedas[0] || ""
-                );
+        const vista = document.getElementById("view-dashboard");
+        const hospitales = unicos(ORDENES.map(x => x.hospital));
+        const monedas = unicos(ORDENES.map(x => x.moneda));
+        const anios = unicos(
+            ORDENES.map(x => texto(x.fecha).substring(0, 4)).filter(Boolean)
+        ).sort().reverse();
+        const monedaDefault = monedas.includes("CLP") ? "CLP" : (monedas[0] || "");
+        const ultimoAnio = anios[0] || "";
+        const meses = [
+            ["01", "Enero"], ["02", "Febrero"], ["03", "Marzo"], ["04", "Abril"],
+            ["05", "Mayo"], ["06", "Junio"], ["07", "Julio"], ["08", "Agosto"],
+            ["09", "Septiembre"], ["10", "Octubre"], ["11", "Noviembre"], ["12", "Diciembre"]
+        ];
 
         vista.innerHTML = `
         <div class="container-fluid px-0">
-
             <div class="page-title">
                 <div>
-                    <h2>Dashboard General</h2>
-                    <p>
-                        Visión ejecutiva del comportamiento histórico de las compras.
-                    </p>
+                    <span class="page-badge">ANÁLISIS EJECUTIVO</span>
+                    <h2>Dashboard de Compras</h2>
+                    <p>Qué está ocurriendo en las compras durante el período seleccionado.</p>
                 </div>
-
-                <div class="data-status">
-                    <span></span>
-                    Datos disponibles
-                </div>
+                <div class="data-status"><span></span>Datos disponibles</div>
             </div>
 
             <div class="filter-panel">
                 <div class="row g-3 align-items-end">
-
                     <div class="col-xl-3">
-                        <label class="form-label">
-                            Hospital
-                        </label>
-                        <select
-                            id="dash-hospital"
-                            class="form-select"
-                        >
-                            <option value="">
-                                Todos los hospitales
-                            </option>
-
-                            ${hospitales.map(x => `
-                                <option value="${escapar(x)}">
-                                    ${escapar(x)}
-                                </option>
-                            `).join("")}
+                        <label class="form-label">Hospital</label>
+                        <select id="dash-hospital" class="form-select">
+                            <option value="">Todos los hospitales</option>
+                            ${hospitales.map(x => `<option value="${escapar(x)}">${escapar(x)}</option>`).join("")}
                         </select>
                     </div>
-
                     <div class="col-xl-2">
-                        <label class="form-label">
-                            Moneda
-                        </label>
-                        <select
-                            id="dash-moneda"
-                            class="form-select"
-                        >
-                            ${monedas.map(x => `
-                                <option
-                                    value="${escapar(x)}"
-                                    ${x === monedaDefault
-                                        ? "selected"
-                                        : ""}
-                                >
-                                    ${escapar(x)}
-                                </option>
-                            `).join("")}
+                        <label class="form-label">Moneda</label>
+                        <select id="dash-moneda" class="form-select">
+                            ${monedas.map(x => `<option value="${escapar(x)}" ${x === monedaDefault ? "selected" : ""}>${escapar(x)}</option>`).join("")}
                         </select>
                     </div>
-
                     <div class="col-xl-2">
-                        <label class="form-label">
-                            Año
-                        </label>
-                        <select
-                            id="dash-anio"
-                            class="form-select"
-                        >
-                            <option value="">
-                                Todos
-                            </option>
-
-                            ${anios.map(x => `
-                                <option value="${x}">
-                                    ${x}
-                                </option>
-                            `).join("")}
+                        <label class="form-label">Año</label>
+                        <select id="dash-anio" class="form-select">
+                            <option value="">Todos</option>
+                            ${anios.map(x => `<option value="${x}" ${x === ultimoAnio ? "selected" : ""}>${x}</option>`).join("")}
                         </select>
                     </div>
-
-                    <div class="col-xl-3">
-                        <label class="form-label">
-                            Proveedores
-                        </label>
-                        <select
-                            id="dash-limite"
-                            class="form-select"
-                        >
-                            <option value="10">
-                                Top 10
-                            </option>
-                            <option
-                                value="25"
-                                selected
-                            >
-                                Top 25
-                            </option>
-                            <option value="0">
-                                Todos
-                            </option>
-                        </select>
-                    </div>
-
                     <div class="col-xl-2">
-                        <button
-                            id="dash-aplicar"
-                            class="btn btn-primary w-100"
-                        >
-                            Aplicar
-                        </button>
+                        <label class="form-label">Mes</label>
+                        <select id="dash-mes" class="form-select">
+                            <option value="">Todos</option>
+                            ${meses.map(([v, n]) => `<option value="${v}">${n}</option>`).join("")}
+                        </select>
                     </div>
-
+                    <div class="col-xl-2">
+                        <label class="form-label">Ranking</label>
+                        <select id="dash-limite" class="form-select">
+                            <option value="10" selected>Top 10</option>
+                            <option value="25">Top 25</option>
+                            <option value="0">Todos</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-1">
+                        <button id="dash-aplicar" class="btn btn-primary w-100">Aplicar</button>
+                    </div>
                 </div>
             </div>
 
             <div id="dash-contenido"></div>
+        </div>`;
 
-        </div>
-        `;
-
-        document
-            .getElementById(
-                "dash-aplicar"
-            )
-            .addEventListener(
-                "click",
-                actualizarDashboard
-            );
-
+        document.getElementById("dash-aplicar").addEventListener("click", actualizarDashboard);
+        ["dash-hospital", "dash-moneda", "dash-anio", "dash-mes", "dash-limite"].forEach(id => {
+            document.getElementById(id).addEventListener("change", actualizarDashboard);
+        });
         actualizarDashboard();
+    }
+
+
+    function nombreMes(numeroMes) {
+        const nombres = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        const indice = Number(numeroMes) - 1;
+        return indice >= 0 && indice < nombres.length ? nombres[indice] : "";
+    }
+
+
+    function variacionPorcentual(actual, anterior) {
+        actual = numero(actual);
+        anterior = numero(anterior);
+        if (anterior === 0) return null;
+        return ((actual - anterior) / anterior) * 100;
+    }
+
+
+    function textoVariacion(actual, anterior, etiquetaAnterior) {
+        if (anterior === null || anterior === undefined) {
+            return { texto: "Sin período comparable", clase: "neutral", icono: "bi-dash" };
+        }
+        const v = variacionPorcentual(actual, anterior);
+        if (v === null) {
+            return { texto: "Sin base comparable", clase: "neutral", icono: "bi-dash" };
+        }
+        const clase = v > 0 ? "positive" : (v < 0 ? "negative" : "neutral");
+        const icono = v > 0 ? "bi-arrow-up" : (v < 0 ? "bi-arrow-down" : "bi-dash");
+        const signo = v > 0 ? "+" : "";
+        return { texto: `${signo}${formatoNumero(v, 1)}% vs ${etiquetaAnterior}`, clase, icono };
+    }
+
+
+    function kpiComparativo(titulo, valor, descripcion, comparacion) {
+        return `
+        <div class="col-xl-3 col-md-6">
+            <div class="card kpi-card h-100">
+                <div class="card-body">
+                    <div class="kpi-header"><span>${escapar(titulo)}</span></div>
+                    <div class="kpi-value">${escapar(valor)}</div>
+                    <div class="kpi-description">${escapar(descripcion)}</div>
+                    <div class="metric-trend ${comparacion.clase}">
+                        <i class="bi ${comparacion.icono}"></i>${escapar(comparacion.texto)}
+                    </div>
+                </div>
+            </div>
+        </div>`;
     }
 
 
     function actualizarDashboard() {
         limpiarCharts();
 
-        const hospital =
-            document.getElementById(
-                "dash-hospital"
-            ).value;
+        const hospital = document.getElementById("dash-hospital").value;
+        const moneda = document.getElementById("dash-moneda").value;
+        const anio = document.getElementById("dash-anio").value;
+        const mes = document.getElementById("dash-mes").value;
+        const limite = Number(document.getElementById("dash-limite").value);
 
-        const moneda =
-            document.getElementById(
-                "dash-moneda"
-            ).value;
+        const filtrarBase = (o, filtroAnio = anio, filtroMes = mes) => {
+            if (hospital && texto(o.hospital) !== hospital) return false;
+            if (moneda && texto(o.moneda) !== moneda) return false;
+            const fecha = texto(o.fecha);
+            if (filtroAnio && fecha.substring(0, 4) !== filtroAnio) return false;
+            if (filtroMes && fecha.substring(5, 7) !== filtroMes) return false;
+            return true;
+        };
 
-        const anio =
-            document.getElementById(
-                "dash-anio"
-            ).value;
+        const df = ORDENES.filter(o => filtrarBase(o));
 
-        const limite =
-            Number(
-                document.getElementById(
-                    "dash-limite"
-                ).value
-            );
-
-        let df =
-            ORDENES.filter(o => {
-                if (
-                    hospital &&
-                    texto(o.hospital) !== hospital
-                ) {
-                    return false;
-                }
-
-                if (
-                    moneda &&
-                    texto(o.moneda) !== moneda
-                ) {
-                    return false;
-                }
-
-                if (
-                    anio &&
-                    texto(o.fecha)
-                        .substring(0, 4) !== anio
-                ) {
-                    return false;
-                }
-
-                return true;
-            });
-
-        const ocs =
-            new Set(
-                df.map(x =>
-                    texto(x.numero_oc)
-                )
-            );
-
-        const det =
-            DETALLE.filter(x =>
-                ocs.has(
-                    texto(x.numero_oc)
-                )
-            );
-
-        const proveedores =
-            agrupar(
-                df.filter(
-                    x =>
-                        texto(
-                            x.proveedor
-                        ).trim()
-                ),
-                x => texto(x.proveedor)
-            );
-
-        let ranking =
-            [...proveedores.entries()]
-                .map(([nombre, rows]) => ({
-                    proveedor: nombre,
-                    ordenes:
-                        unicos(
-                            rows.map(
-                                x =>
-                                    x.numero_oc
-                            )
-                        ).length,
-                    total:
-                        rows.reduce(
-                            (s, x) =>
-                                s +
-                                numero(x.total),
-                            0
-                        )
-                }))
-                .sort(
-                    (a, b) =>
-                        b.total - a.total
-                );
-
-        const totalRanking =
-            ranking.length;
-
-        if (limite > 0) {
-            ranking =
-                ranking.slice(
-                    0,
-                    limite
-                );
+        if (!df.length) {
+            document.getElementById("dash-contenido").innerHTML = `<div class="dashboard-empty"><i class="bi bi-inbox"></i><br><strong>Sin compras para los filtros seleccionados.</strong><br>Cambia el período, hospital o moneda.</div>`;
+            return;
         }
 
-        const hospitales =
-            [...agrupar(
-                df.filter(
-                    x =>
-                        texto(
-                            x.hospital
-                        ).trim()
-                ),
-                x => texto(x.hospital)
-            ).entries()]
+        let anioAnterior = null;
+        let mesAnterior = null;
+        let etiquetaAnterior = "período anterior";
+
+        if (anio && mes) {
+            let y = Number(anio);
+            let m = Number(mes) - 1;
+            if (m === 0) { m = 12; y -= 1; }
+            anioAnterior = String(y);
+            mesAnterior = String(m).padStart(2, "0");
+            etiquetaAnterior = `${nombreMes(mesAnterior)} ${anioAnterior}`;
+        } else if (anio) {
+            anioAnterior = String(Number(anio) - 1);
+            mesAnterior = "";
+            etiquetaAnterior = anioAnterior;
+        }
+
+        const dfAnterior = anioAnterior
+            ? ORDENES.filter(o => filtrarBase(o, anioAnterior, mesAnterior))
+            : [];
+
+        const ocs = new Set(df.map(x => texto(x.numero_oc)));
+        const det = DETALLE_COMPLETO.filter(x => ocs.has(texto(x.numero_oc)));
+        const ocsAnterior = new Set(dfAnterior.map(x => texto(x.numero_oc)));
+
+        const proveedoresAgrupados = agrupar(df.filter(x => texto(x.proveedor).trim()), x => texto(x.proveedor));
+        const rankingCompleto = [...proveedoresAgrupados.entries()]
+            .map(([nombre, rows]) => ({
+                proveedor: nombre,
+                ordenes: unicos(rows.map(x => x.numero_oc)).length,
+                total: rows.reduce((s, x) => s + numero(x.total), 0)
+            }))
+            .sort((a, b) => b.total - a.total);
+
+        const totalRanking = rankingCompleto.length;
+        const ranking = limite > 0 ? rankingCompleto.slice(0, limite) : [...rankingCompleto];
+
+        const hospitales = [...agrupar(df.filter(x => texto(x.hospital).trim()), x => texto(x.hospital)).entries()]
             .map(([nombre, rows]) => ({
                 hospital: nombre,
-                ordenes:
-                    unicos(
-                        rows.map(
-                            x =>
-                                x.numero_oc
-                        )
-                    ).length,
-                total:
-                    rows.reduce(
-                        (s, x) =>
-                            s +
-                            numero(x.total),
-                        0
-                    )
+                ordenes: unicos(rows.map(x => x.numero_oc)).length,
+                total: rows.reduce((s, x) => s + numero(x.total), 0)
             }))
-            .sort(
-                (a, b) =>
-                    b.total - a.total
-            );
+            .sort((a, b) => b.total - a.total);
 
-        const meses =
-            agrupar(
-                df.filter(x => x.fecha),
-                x =>
-                    texto(x.fecha)
-                        .substring(0, 7)
-            );
+        const totalComprado = df.reduce((s, x) => s + numero(x.total), 0);
+        const totalAnterior = dfAnterior.reduce((s, x) => s + numero(x.total), 0);
+        const cantidadOC = ocs.size;
+        const cantidadOCAnterior = ocsAnterior.size;
+        const proveedoresAnterior = unicos(dfAnterior.map(x => x.proveedor).filter(Boolean)).length;
+        const ticketPromedio = cantidadOC ? totalComprado / cantidadOC : 0;
+        const ticketAnterior = cantidadOCAnterior ? totalAnterior / cantidadOCAnterior : 0;
 
-        const evolucion =
-            [...meses.entries()]
-                .map(([periodo, rows]) => ({
-                    periodo,
-                    total:
-                        rows.reduce(
-                            (s, x) =>
-                                s +
-                                numero(x.total),
-                            0
-                        )
-                }))
-                .sort(
-                    (a, b) =>
-                        a.periodo.localeCompare(
-                            b.periodo
-                        )
+        const periodoTexto = anio
+            ? (mes ? `${nombreMes(mes)} ${anio}` : anio)
+            : (mes ? nombreMes(mes) : "Todo el historial");
+
+        const comparacionDisponible = Boolean(anioAnterior);
+        const cmpTotal = comparacionDisponible ? textoVariacion(totalComprado, totalAnterior, etiquetaAnterior) : textoVariacion(totalComprado, null, "");
+        const cmpOC = comparacionDisponible ? textoVariacion(cantidadOC, cantidadOCAnterior, etiquetaAnterior) : textoVariacion(cantidadOC, null, "");
+        const cmpProv = comparacionDisponible ? textoVariacion(totalRanking, proveedoresAnterior, etiquetaAnterior) : textoVariacion(totalRanking, null, "");
+        const cmpTicket = comparacionDisponible ? textoVariacion(ticketPromedio, ticketAnterior, etiquetaAnterior) : textoVariacion(ticketPromedio, null, "");
+
+        let evolucion;
+        let evolucionTitulo;
+        let evolucionSubtitulo;
+
+        if (anio && mes) {
+            const dias = agrupar(df.filter(x => x.fecha), x => texto(x.fecha).substring(0, 10));
+            evolucion = [...dias.entries()].map(([periodo, rows]) => ({
+                periodo,
+                total: rows.reduce((s, x) => s + numero(x.total), 0),
+                ordenes: unicos(rows.map(x => x.numero_oc)).length
+            })).sort((a, b) => a.periodo.localeCompare(b.periodo));
+            evolucionTitulo = `Evolución diaria · ${periodoTexto}`;
+            evolucionSubtitulo = `Monto y cantidad de OC por día en ${escapar(moneda)}.`;
+        } else {
+            const mesesAgrupados = agrupar(df.filter(x => x.fecha), x => texto(x.fecha).substring(0, 7));
+            evolucion = [...mesesAgrupados.entries()].map(([periodo, rows]) => ({
+                periodo,
+                total: rows.reduce((s, x) => s + numero(x.total), 0),
+                ordenes: unicos(rows.map(x => x.numero_oc)).length
+            })).sort((a, b) => a.periodo.localeCompare(b.periodo));
+            evolucionTitulo = "Evolución de Compras";
+            evolucionSubtitulo = `Monto y cantidad de OC por mes en ${escapar(moneda)}.`;
+        }
+
+
+        const montoLinea = x => {
+            const totalLinea = numero(x.total_linea);
+            if (totalLinea > 0) return totalLinea;
+            return numero(x.cantidad) * numero(x.precio_unitario);
+        };
+
+        const totalDetallePeriodo = det.reduce(
+            (s, x) => s + montoLinea(x),
+            0
+        );
+
+        const principalesComprasTodas = [...agrupar(
+            det.filter(x => texto(x.descripcion).trim()),
+            x => texto(x.descripcion).trim()
+        ).entries()]
+            .map(([descripcion, rows]) => {
+                const monto = rows.reduce(
+                    (s, x) => s + montoLinea(x),
+                    0
                 );
 
-        const ultimas =
-            [...df]
-                .sort(
-                    (a, b) =>
-                        fechaValor(b.fecha) -
-                        fechaValor(a.fecha)
-                )
-                .slice(0, 10);
-
-        const totalComprado =
-            df.reduce(
-                (s, x) =>
-                    s + numero(x.total),
-                0
+                return {
+                    descripcion,
+                    monto,
+                    ordenes: unicos(rows.map(x => x.numero_oc)).length,
+                    proveedores: unicos(rows.map(x => x.proveedor).filter(Boolean)).length
+                };
+            })
+            .filter(x => x.monto > 0)
+            .sort((a, b) =>
+                b.monto - a.monto ||
+                b.ordenes - a.ordenes
             );
 
-        document.getElementById(
-            "dash-contenido"
-        ).innerHTML = `
+        const principalesCompras = principalesComprasTodas.slice(
+            0,
+            DASH_TOP_COMPRAS
+        );
+
+        const montoTopCompras = principalesCompras.reduce(
+            (s, x) => s + x.monto,
+            0
+        );
+
+        const participacionTopCompras = totalDetallePeriodo > 0
+            ? (montoTopCompras / totalDetallePeriodo) * 100
+            : 0;
+
+        const hospitalBloque = !hospital ? `
+            <div class="card content-card mt-4">
+                <div class="card-body">
+                    <div class="card-title-area">
+                        <div>
+                            <h3>Compras por Hospital</h3>
+                            <p>Distribución del monto comprado en ${escapar(periodoTexto)}.</p>
+                        </div>
+                    </div>
+                    <div class="chart-container"><canvas id="graficoHospitalStatic"></canvas></div>
+                </div>
+            </div>` : "";
+
+        document.getElementById("dash-contenido").innerHTML = `
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <span class="dashboard-period-label"><i class="bi bi-calendar3"></i>${escapar(periodoTexto)}</span>
+                <small class="text-muted">${cantidadOC} OC · ${totalRanking} proveedores · ${det.length} líneas de artículos</small>
+            </div>
 
             <div class="row g-4">
-
-                ${kpi(
-                    "Total Comprado",
-                    formatoMoneda(
-                        totalComprado,
-                        moneda
-                    ),
-                    moneda
-                )}
-
-                ${kpi(
-                    "Órdenes de Compra",
-                    unicos(
-                        df.map(
-                            x => x.numero_oc
-                        )
-                    ).length,
-                    "documentos"
-                )}
-
-                ${kpi(
-                    "Proveedores",
-                    totalRanking,
-                    "proveedores distintos"
-                )}
-
-                ${kpi(
-                    "Movimientos",
-                    det.length,
-                    "líneas de artículos"
-                )}
-
+                ${kpiComparativo("Total Comprado", formatoMoneda(totalComprado, moneda), moneda, cmpTotal)}
+                ${kpiComparativo("Órdenes de Compra", cantidadOC, "documentos", cmpOC)}
+                ${kpiComparativo("Proveedores Activos", totalRanking, "proveedores distintos", cmpProv)}
+                ${kpiComparativo("Ticket Promedio OC", formatoMoneda(ticketPromedio, moneda), "promedio por documento", cmpTicket)}
             </div>
 
             <div class="card content-card mt-4">
                 <div class="card-body">
-                    <div class="card-title-area">
-                        <div>
-                            <h3>
-                                Evolución de Compras
-                            </h3>
-                            <p>
-                                Monto mensual en ${escapar(
-                                    moneda
-                                )}.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="chart-container chart-large">
-                        <canvas id="graficoEvolucionStatic">
-                        </canvas>
-                    </div>
+                    <div class="card-title-area"><div><h3>${evolucionTitulo}</h3><p>${evolucionSubtitulo}</p></div></div>
+                    <div class="chart-container chart-large"><canvas id="graficoEvolucionStatic"></canvas></div>
                 </div>
             </div>
 
@@ -1398,259 +1352,111 @@ def generar_html(ordenes, detalle):
                 <div class="card-body">
                     <div class="card-title-area">
                         <div>
-                            <h3>
-                                Compras por proveedor
-                            </h3>
-                            <p>
-                                Ranking por monto.
-                            </p>
+                            <h3>Compras por proveedor</h3>
+                            <p>Proveedores con mayor monto comprado en ${escapar(periodoTexto)}.</p>
                         </div>
                     </div>
-
-                    <div
-                        class="chart-container"
-                        style="height:${Math.max(
-                            420,
-                            ranking.length * 28 + 80
-                        )}px"
-                    >
-                        <canvas id="graficoProveedoresStatic">
-                        </canvas>
-                    </div>
+                    <div class="chart-container" style="height:${Math.max(360, ranking.length * 30 + 80)}px"><canvas id="graficoProveedoresStatic"></canvas></div>
                 </div>
             </div>
 
-            <div class="row g-4 mt-1">
-
-                <div class="col-xl-5">
-                    <div class="card content-card h-100">
-                        <div class="card-body">
-                            <div class="card-title-area">
-                                <div>
-                                    <h3>
-                                        Compras por Hospital
-                                    </h3>
-                                </div>
-                            </div>
-
-                            <div class="chart-container">
-                                <canvas id="graficoHospitalStatic">
-                                </canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-7">
-                    <div class="card content-card h-100">
-                        <div class="card-body">
-
-                            <div class="card-title-area">
-                                <div>
-                                    <h3>
-                                        Proveedores destacados
-                                    </h3>
-                                </div>
-                            </div>
-
-                            <div class="table-responsive">
-                                <table class="table purchase-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Proveedor</th>
-                                            <th>OC</th>
-                                            <th class="text-end">
-                                                Monto
-                                            </th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        ${ranking
-                                            .slice(0, 15)
-                                            .map(x => `
-                                            <tr>
-                                                <td>
-                                                    ${escapar(
-                                                        x.proveedor
-                                                    )}
-                                                </td>
-                                                <td>
-                                                    ${x.ordenes}
-                                                </td>
-                                                <td class="text-end">
-                                                    <strong>
-                                                        ${formatoMoneda(
-                                                            x.total,
-                                                            moneda
-                                                        )}
-                                                    </strong>
-                                                </td>
-                                            </tr>
-                                        `).join("")}
-                                    </tbody>
-                                </table>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+            ${hospitalBloque}
 
             <div class="card content-card mt-4">
                 <div class="card-body">
-
-                    <div class="card-title-area">
+                    <div class="card-title-area align-items-center">
                         <div>
-                            <h3>
-                                Últimas Órdenes de Compra
-                            </h3>
+                            <h3>Principales compras del período</h3>
+                            <p>Productos y conceptos con mayor monto acumulado en ${escapar(periodoTexto)}.</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
+                            <span class="dashboard-period-label">
+                                Top ${DASH_TOP_COMPRAS} · ${formatoNumero(participacionTopCompras, 1)}% del monto analizado
+                            </span>
+                            <select id="dash-top-compras-selector" class="form-select form-select-sm" style="width:auto;min-height:34px;">
+                                <option value="10" ${DASH_TOP_COMPRAS === 10 ? "selected" : ""}>Top 10</option>
+                                <option value="25" ${DASH_TOP_COMPRAS === 25 ? "selected" : ""}>Top 25</option>
+                            </select>
                         </div>
                     </div>
-
                     <div class="table-responsive">
                         <table class="table purchase-table">
                             <thead>
                                 <tr>
-                                    <th>OC</th>
-                                    <th>Fecha</th>
-                                    <th>Hospital</th>
-                                    <th>Proveedor</th>
-                                    <th>Total</th>
+                                    <th>#</th>
+                                    <th>Producto / concepto</th>
+                                    <th class="text-end">Monto comprado</th>
+                                    <th class="text-end">OC</th>
+                                    <th class="text-end">Proveedores</th>
+                                    <th class="text-end">% del período</th>
                                 </tr>
                             </thead>
-
                             <tbody>
-                                ${ultimas.map(o => `
-                                <tr
-                                    class="static-click"
-                                    onclick="abrirOC('${escapar(
-                                        o.numero_oc
-                                    )}')"
-                                >
-                                    <td>
-                                        <strong>
-                                            ${escapar(
-                                                o.numero_oc
-                                            )}
-                                        </strong>
-                                    </td>
-
-                                    <td>
-                                        ${fechaTexto(
-                                            o.fecha
-                                        )}
-                                    </td>
-
-                                    <td>
-                                        ${escapar(
-                                            o.hospital
-                                        )}
-                                    </td>
-
-                                    <td>
-                                        ${escapar(
-                                            o.proveedor
-                                        )}
-                                    </td>
-
-                                    <td>
-                                        ${formatoMoneda(
-                                            o.total,
-                                            o.moneda
-                                        )}
-                                    </td>
-                                </tr>
-                                `).join("")}
+                                ${principalesCompras.length ? principalesCompras.map((x, i) => `
+                                    <tr>
+                                        <td>${i + 1}</td>
+                                        <td class="product-cell"><strong>${escapar(x.descripcion)}</strong></td>
+                                        <td class="text-end"><strong>${formatoMoneda(x.monto, moneda)}</strong></td>
+                                        <td class="text-end">${x.ordenes}</td>
+                                        <td class="text-end">${x.proveedores}</td>
+                                        <td class="text-end">${totalDetallePeriodo > 0 ? formatoNumero((x.monto / totalDetallePeriodo) * 100, 1) : "0,0"}%</td>
+                                    </tr>`).join("") : `
+                                    <tr><td colspan="6"><div class="static-empty">Sin compras con monto disponible para el período.</div></td></tr>`}
                             </tbody>
                         </table>
                     </div>
-
+                    <div class="supplier-table-note mt-3">
+                        <i class="bi bi-info-circle"></i>
+                        <span>El ranking utiliza el monto de las líneas de artículos de las OC filtradas. Si una línea no trae total, se estima con cantidad × precio unitario.</span>
+                    </div>
                 </div>
-            </div>
-        `;
+            </div>`;
+
+        const selectorTopCompras = document.getElementById("dash-top-compras-selector");
+        if (selectorTopCompras) {
+            selectorTopCompras.addEventListener("change", () => {
+                DASH_TOP_COMPRAS = Number(selectorTopCompras.value) || 10;
+                actualizarDashboard();
+            });
+        }
 
         setTimeout(() => {
-            crearChart(
-                "graficoEvolucionStatic",
-                {
-                    type: "line",
-                    data: {
-                        labels:
-                            evolucion.map(
-                                x => x.periodo
-                            ),
-                        datasets: [{
-                            label:
-                                "Monto comprado",
-                            data:
-                                evolucion.map(
-                                    x => x.total
-                                ),
-                            borderWidth: 2,
-                            tension: 0.25
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false
+            crearChart("graficoEvolucionStatic", {
+                data: {
+                    labels: evolucion.map(x => x.periodo),
+                    datasets: [
+                        { type: "line", label: "Monto comprado", data: evolucion.map(x => x.total), yAxisID: "y", borderWidth: 2, tension: .25 },
+                        { type: "bar", label: "Cantidad de OC", data: evolucion.map(x => x.ordenes), yAxisID: "y1", borderWidth: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: "index", intersect: false },
+                    scales: {
+                        y: { beginAtZero: true, position: "left" },
+                        y1: { beginAtZero: true, position: "right", grid: { drawOnChartArea: false }, ticks: { precision: 0 } }
                     }
                 }
-            );
+            });
 
-            crearChart(
-                "graficoProveedoresStatic",
-                {
-                    type: "bar",
-                    data: {
-                        labels:
-                            ranking.map(
-                                x =>
-                                    x.proveedor
-                            ),
-                        datasets: [{
-                            label: "Monto",
-                            data:
-                                ranking.map(
-                                    x => x.total
-                                )
-                        }]
-                    },
-                    options: {
-                        indexAxis: "y",
-                        responsive: true,
-                        maintainAspectRatio: false
-                    }
-                }
-            );
+            crearChart("graficoProveedoresStatic", {
+                type: "bar",
+                data: { labels: ranking.map(x => x.proveedor), datasets: [{ label: "Monto", data: ranking.map(x => x.total) }] },
+                options: { indexAxis: "y", responsive: true, maintainAspectRatio: false }
+            });
 
-            crearChart(
-                "graficoHospitalStatic",
-                {
+            if (!hospital && document.getElementById("graficoHospitalStatic")) {
+                crearChart("graficoHospitalStatic", {
                     type: "doughnut",
-                    data: {
-                        labels:
-                            hospitales.map(
-                                x =>
-                                    x.hospital
-                            ),
-                        datasets: [{
-                            data:
-                                hospitales.map(
-                                    x =>
-                                        x.total
-                                )
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false
-                    }
-                }
-            );
+                    data: { labels: hospitales.map(x => x.hospital), datasets: [{ data: hospitales.map(x => x.total) }] },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            }
         }, 0);
     }
+
+
 
 
     // ========================================================
@@ -2279,19 +2085,31 @@ def generar_html(ordenes, detalle):
             </div>
 
             <div class="search-panel">
-                <div class="input-group">
-                    <input
-                        id="proveedor-q"
-                        class="form-control"
-                        placeholder="Nombre, RUT o producto..."
-                    >
-
-                    <button
-                        id="proveedor-buscar"
-                        class="btn btn-primary"
-                    >
-                        Buscar
-                    </button>
+                <div class="row g-3 align-items-end">
+                    <div class="col-xl-9 col-lg-8">
+                        <label class="form-label">Buscar proveedor</label>
+                        <input
+                            id="proveedor-q"
+                            class="form-control"
+                            placeholder="Nombre, RUT o producto..."
+                        >
+                    </div>
+                    <div class="col-xl-2 col-lg-2">
+                        <label class="form-label">Mostrar</label>
+                        <select id="proveedor-limite" class="form-select">
+                            <option value="10" selected>Top 10</option>
+                            <option value="25">Top 25</option>
+                            <option value="0">Todos</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-1 col-lg-2">
+                        <button
+                            id="proveedor-buscar"
+                            class="btn btn-primary w-100"
+                        >
+                            Buscar
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -2301,13 +2119,18 @@ def generar_html(ordenes, detalle):
         `;
 
         document
-            .getElementById(
-                "proveedor-buscar"
-            )
-            .addEventListener(
-                "click",
-                buscarProveedores
-            );
+            .getElementById("proveedor-buscar")
+            .addEventListener("click", buscarProveedores);
+
+        document
+            .getElementById("proveedor-limite")
+            .addEventListener("change", buscarProveedores);
+
+        document
+            .getElementById("proveedor-q")
+            .addEventListener("keydown", e => {
+                if (e.key === "Enter") buscarProveedores();
+            });
 
         buscarProveedores();
     }
@@ -2425,9 +2248,12 @@ def generar_html(ordenes, detalle):
                             .includes(q)
                     )
                 );
-        } else {
-            catalogo =
-                catalogo.slice(0, 25);
+        }
+
+        const selectorLimite = document.getElementById("proveedor-limite");
+        const limite = selectorLimite ? Number(selectorLimite.value) : 10;
+        if (limite > 0) {
+            catalogo = catalogo.slice(0, limite);
         }
 
         const contenedor =
@@ -2786,6 +2612,7 @@ def generar_html(ordenes, detalle):
                         <input
                             id="precio-producto"
                             class="form-control"
+                            placeholder="Ej.: cable, adhesivo, perfil, drenaje..."
                         >
                     </div>
 
@@ -2796,6 +2623,7 @@ def generar_html(ordenes, detalle):
                         <input
                             id="precio-proveedor"
                             class="form-control"
+                            placeholder="Ej.: Budnik, Dartel, Rhona..."
                         >
                     </div>
 
@@ -2864,6 +2692,12 @@ def generar_html(ordenes, detalle):
                 "click",
                 aplicarPrecios
             );
+
+        ["precio-producto", "precio-proveedor"].forEach(id => {
+            document.getElementById(id).addEventListener("keydown", event => {
+                if (event.key === "Enter") aplicarPrecios();
+            });
+        });
     }
 
 
@@ -2969,29 +2803,56 @@ def generar_html(ordenes, detalle):
                     texto(x.moneda)
             );
 
-        const filas =
-            [...df]
-                .sort(
-                    (a, b) =>
-                        fechaValor(b.fecha) -
-                        fechaValor(a.fecha)
-                )
-                .slice(0, 300);
+        PRECIO_RESULTADOS_ACTUALES = [...df];
+        PRECIO_STATS_ACTUALES = stats;
 
         contenedor.innerHTML = `
         <div class="card content-card">
             <div class="card-body">
 
-                <div class="card-title-area">
+                <div class="card-title-area mb-3">
                     <div>
-                        <h3>
-                            Movimientos encontrados
-                        </h3>
-                        <p>
-                            ${df.length}
-                            registros.
-                        </p>
+                        <h3>Movimientos encontrados</h3>
+                        <p>${df.length} registros coinciden con los filtros principales.</p>
                     </div>
+                </div>
+
+                <div class="row g-3 align-items-end mb-3">
+                    <div class="col-xl-6">
+                        <label class="form-label">Buscar dentro de los resultados</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input
+                                id="precio-buscar-resultados"
+                                class="form-control"
+                                placeholder="OC, producto, proveedor u hospital..."
+                            >
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label class="form-label">Mostrar</label>
+                        <select id="precio-limite-resultados" class="form-select">
+                            <option value="10" selected>Top 10</option>
+                            <option value="25">Top 25</option>
+                            <option value="0">Todos</option>
+                        </select>
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label class="form-label">Ordenar por</label>
+                        <select id="precio-orden-resultados" class="form-select">
+                            <option value="recientes" selected>Más recientes</option>
+                            <option value="antiguos">Más antiguos</option>
+                            <option value="precio-desc">Precio mayor</option>
+                            <option value="precio-asc">Precio menor</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                    <small id="precio-contador-resultados" class="text-muted"></small>
+                    <small class="text-muted">La tabla conserva fecha, OC, producto, unidad, proveedor, hospital, cantidad, moneda, precio, mínimo y máximo.</small>
                 </div>
 
                 <div class="table-responsive">
@@ -3006,139 +2867,131 @@ def generar_html(ordenes, detalle):
                                 <th>Hospital</th>
                                 <th>Cantidad</th>
                                 <th>Moneda</th>
-                                <th class="text-end">
-                                    Precio
-                                </th>
-                                <th class="text-end">
-                                    Mín.
-                                </th>
-                                <th class="text-end">
-                                    Máx.
-                                </th>
+                                <th class="text-end">Precio</th>
+                                <th class="text-end">Mín.</th>
+                                <th class="text-end">Máx.</th>
                             </tr>
                         </thead>
-
-                        <tbody>
-                            ${filas.map(x => {
-                                const clave =
-                                    texto(
-                                        x.descripcion
-                                    ) +
-                                    "\x1f" +
-                                    texto(
-                                        x.unidad_medida
-                                    ) +
-                                    "\x1f" +
-                                    texto(
-                                        x.moneda
-                                    );
-
-                                const hist =
-                                    stats.get(clave) ||
-                                    [];
-
-                                const valores =
-                                    hist.map(
-                                        z =>
-                                            numero(
-                                                z.precio_unitario
-                                            )
-                                    );
-
-                                return `
-                                <tr>
-                                    <td>
-                                        ${fechaTexto(
-                                            x.fecha
-                                        )}
-                                    </td>
-
-                                    <td
-                                        class="static-click"
-                                        onclick="abrirOC('${escapar(
-                                            x.numero_oc
-                                        )}')"
-                                    >
-                                        <strong>
-                                            ${escapar(
-                                                x.numero_oc
-                                            )}
-                                        </strong>
-                                    </td>
-
-                                    <td>
-                                        ${escapar(
-                                            x.descripcion
-                                        )}
-                                    </td>
-
-                                    <td>
-                                        ${escapar(
-                                            x.unidad_medida
-                                        )}
-                                    </td>
-
-                                    <td>
-                                        ${escapar(
-                                            x.proveedor
-                                        )}
-                                    </td>
-
-                                    <td>
-                                        ${escapar(
-                                            x.hospital
-                                        )}
-                                    </td>
-
-                                    <td>
-                                        ${formatoNumero(
-                                            x.cantidad,
-                                            2
-                                        )}
-                                    </td>
-
-                                    <td>
-                                        ${escapar(
-                                            x.moneda
-                                        )}
-                                    </td>
-
-                                    <td class="text-end">
-                                        <strong>
-                                            ${formatoMoneda(
-                                                x.precio_unitario,
-                                                x.moneda
-                                            )}
-                                        </strong>
-                                    </td>
-
-                                    <td class="text-end">
-                                        ${formatoMoneda(
-                                            Math.min(
-                                                ...valores
-                                            ),
-                                            x.moneda
-                                        )}
-                                    </td>
-
-                                    <td class="text-end">
-                                        ${formatoMoneda(
-                                            Math.max(
-                                                ...valores
-                                            ),
-                                            x.moneda
-                                        )}
-                                    </td>
-                                </tr>
-                                `;
-                            }).join("")}
-                        </tbody>
+                        <tbody id="precio-tabla-body"></tbody>
                     </table>
                 </div>
 
             </div>
         </div>
         `;
+
+        [
+            "precio-buscar-resultados",
+            "precio-limite-resultados",
+            "precio-orden-resultados"
+        ].forEach(id => {
+            const elemento = document.getElementById(id);
+            elemento.addEventListener(
+                id === "precio-buscar-resultados" ? "input" : "change",
+                actualizarTablaPrecios
+            );
+        });
+
+        actualizarTablaPrecios();
+    }
+
+
+    function actualizarTablaPrecios() {
+        const cuerpo = document.getElementById("precio-tabla-body");
+        const contador = document.getElementById("precio-contador-resultados");
+        if (!cuerpo || !contador) return;
+
+        const q = texto(
+            document.getElementById("precio-buscar-resultados")?.value
+        ).trim().toLowerCase();
+
+        const limite = Number(
+            document.getElementById("precio-limite-resultados")?.value || 10
+        );
+
+        const orden = texto(
+            document.getElementById("precio-orden-resultados")?.value || "recientes"
+        );
+
+        let filas = PRECIO_RESULTADOS_ACTUALES.filter(x => {
+            if (!q) return true;
+            const combinado = [
+                x.numero_oc,
+                x.descripcion,
+                x.unidad_medida,
+                x.proveedor,
+                x.hospital,
+                x.moneda
+            ].map(texto).join(" ").toLowerCase();
+            return combinado.includes(q);
+        });
+
+        filas.sort((a, b) => {
+            if (orden === "antiguos") {
+                return fechaValor(a.fecha) - fechaValor(b.fecha);
+            }
+            if (orden === "precio-desc") {
+                return numero(b.precio_unitario) - numero(a.precio_unitario);
+            }
+            if (orden === "precio-asc") {
+                return numero(a.precio_unitario) - numero(b.precio_unitario);
+            }
+            return fechaValor(b.fecha) - fechaValor(a.fecha);
+        });
+
+        const totalFiltrado = filas.length;
+        const visibles = limite > 0 ? filas.slice(0, limite) : filas;
+
+        contador.textContent = `Mostrando ${visibles.length} de ${totalFiltrado} movimientos`;
+
+        if (!visibles.length) {
+            cuerpo.innerHTML = `
+                <tr>
+                    <td colspan="11">
+                        <div class="static-empty">No hay movimientos que coincidan con esta búsqueda.</div>
+                    </td>
+                </tr>`;
+            return;
+        }
+
+        cuerpo.innerHTML = visibles.map(x => {
+            const clave =
+                texto(x.descripcion) +
+                "\x1f" +
+                texto(x.unidad_medida) +
+                "\x1f" +
+                texto(x.moneda);
+
+            const hist = PRECIO_STATS_ACTUALES?.get(clave) || [];
+            const valores = hist
+                .map(z => numero(z.precio_unitario))
+                .filter(v => v > 0);
+
+            const minimo = valores.length
+                ? Math.min(...valores)
+                : numero(x.precio_unitario);
+
+            const maximo = valores.length
+                ? Math.max(...valores)
+                : numero(x.precio_unitario);
+
+            return `
+            <tr>
+                <td>${fechaTexto(x.fecha)}</td>
+                <td class="static-click" onclick="abrirOC('${escapar(x.numero_oc)}')">
+                    <strong>${escapar(x.numero_oc)}</strong>
+                </td>
+                <td>${escapar(x.descripcion)}</td>
+                <td>${escapar(x.unidad_medida)}</td>
+                <td>${escapar(x.proveedor)}</td>
+                <td>${escapar(x.hospital)}</td>
+                <td>${formatoNumero(x.cantidad, 2)}</td>
+                <td>${escapar(x.moneda)}</td>
+                <td class="text-end"><strong>${formatoMoneda(x.precio_unitario, x.moneda)}</strong></td>
+                <td class="text-end">${formatoMoneda(minimo, x.moneda)}</td>
+                <td class="text-end">${formatoMoneda(maximo, x.moneda)}</td>
+            </tr>`;
+        }).join("");
     }
 
 
